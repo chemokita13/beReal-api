@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import sharp from 'sharp'; // to download and resize images
-import moment from 'moment';
+import * as moment from 'moment';
 import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
 import { tokenObj } from 'src/types/types';
@@ -83,6 +83,7 @@ export default class BeFake {
       return {
         done: true,
         msg: 'OTP sent successfully',
+        data: { otpSesion: this.otpSession },
       };
     } else {
       return {
@@ -93,7 +94,7 @@ export default class BeFake {
     }
   }
 
-  async saveToken(): Promise<any> {
+  saveToken() {
     // create an object with the tokens and the userId
     const objToSave = {
       access: {
@@ -163,19 +164,14 @@ export default class BeFake {
   }
 
   // Verify a mobile verification (vonage) code sent to a phone number via SMS
-  async verifyOtpVonage(otpCode: string): Promise<BeFakeResponse> {
-    // If there is no otpSession, exit
-    if (!this.otpSession) {
-      return {
-        done: false,
-        msg: 'No otpSession',
-      };
-    }
-
+  async verifyOtpVonage(
+    otpCode: string,
+    otpSesion: string,
+  ): Promise<BeFakeResponse> {
     const otpVerRes = await axios.post(
       'https://auth.bereal.team/api/vonage/check-code',
       {
-        vonageRequestId: this.otpSession,
+        vonageRequestId: otpSesion,
         code: otpCode,
       },
     );
@@ -188,7 +184,6 @@ export default class BeFake {
         data: otpVerRes.data,
       };
     }
-
     try {
       const tokenRes = await axios.post(
         'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken',
