@@ -14,5 +14,6 @@ import { JWT_SECRET } from './constants';
             signOptions: { expiresIn: '48h' },
         }),
     ],
+    exports: [LoginService],
 })
 export class LoginModule {}
