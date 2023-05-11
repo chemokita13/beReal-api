@@ -90,17 +90,11 @@ export class LoginController {
             'application/json': {
                 schema: {
                     example: {
-                        access: {
-                            refresh_token: 'example',
-                            token: 'exampleexampleexampleexampleexampleexample',
-                            expires: '2023-05-07T00:57:49+02:00',
+                        status: 200,
+                        message: 'OTP verified',
+                        data: {
+                            tokenObj: 'JWT_TOKEN',
                         },
-                        firebase: {
-                            refresh_token: 'exampleexampleexampleexample',
-                            token: 'exampleexampleexampleexampleexample',
-                            expires: '2023-05-07T01:06:37+02:00',
-                        },
-                        userId: 'exampleexampleexampleexample',
                     },
                 },
             },
