@@ -6,8 +6,8 @@ import { PostModule } from './post/post.module';
 import { FriendsModule } from './friends/friends.module';
 
 @Module({
-  imports: [LoginModule, PostModule, FriendsModule],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [LoginModule, PostModule, FriendsModule],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

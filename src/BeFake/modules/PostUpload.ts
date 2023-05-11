@@ -1,6 +1,6 @@
-import sharp from "sharp";
-import BeFake from "../BeFake";
-import axios from "axios";
+import sharp from 'sharp';
+import BeFake from '../BeFake';
+import axios from 'axios';
 
 export class PostUpload {
     // Base64 encoded images
@@ -29,9 +29,9 @@ export class PostUpload {
         secondary: Uint8Array,
         late: boolean,
         resize: boolean = false,
-        visibility: string = "friends",
+        visibility: string = 'friends',
         retakes: number = 0,
-        caption?: string // caption is optional
+        caption?: string, // caption is optional
     ) {
         this.primary = primary;
         this.secondary = secondary;
@@ -54,14 +54,14 @@ export class PostUpload {
         const primaryMime = (await sharp(this.primary).metadata()).format;
         const secondaryMime = (await sharp(this.secondary).metadata()).format;
         // if mime != webp => convert srgb
-        if (primaryMime != "webp") {
+        if (primaryMime != 'webp') {
             this.primary = await sharp(this.primary)
-                .toFormat("webp")
+                .toFormat('webp')
                 .toBuffer();
         }
-        if (secondaryMime != "webp") {
+        if (secondaryMime != 'webp') {
             this.secondary = await sharp(this.secondary)
-                .toFormat("webp")
+                .toFormat('webp')
                 .toBuffer();
         }
         // Resize imgs if resize is true
@@ -79,19 +79,19 @@ export class PostUpload {
     // Upload photos to server (first steps: get path, urls and headers)
     public async upload(beFake: BeFake): Promise<{}> {
         const response = await beFake._apiRequest(
-            "get",
-            "content/posts/upload-url",
+            'get',
+            'content/posts/upload-url',
             {},
-            { mimeType: "image/webp" }
+            { mimeType: 'image/webp' },
         );
 
         let headers1 = response.data[0].headers;
-        headers1["Authorization"] = "Bearer " + beFake.token;
-        headers1["user-agent"] = beFake.headers["user-agent"];
+        headers1['Authorization'] = 'Bearer ' + beFake.token;
+        headers1['user-agent'] = beFake.headers['user-agent'];
         const url1 = response.data[0].url;
         let headers2 = response.data[1].headers;
-        headers2["Authorization"] = "Bearer " + beFake.token;
-        headers2["user-agent"] = beFake.headers["user-agent"];
+        headers2['Authorization'] = 'Bearer ' + beFake.token;
+        headers2['user-agent'] = beFake.headers['user-agent'];
         const url2 = response.data[1].url;
 
         const primary_res = await axios.put(url1, this.primary, {
