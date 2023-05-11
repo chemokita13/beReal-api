@@ -1,6 +1,5 @@
 import { Controller, Get, Req } from '@nestjs/common';
 import { FriendsService } from './friends.service';
-import { LoginService } from 'src/login/login.service';
 import { APIresponse } from 'src/types/types';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
