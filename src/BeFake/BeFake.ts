@@ -129,7 +129,7 @@ export default class BeFake {
             this.expiration = moment().add(response.data.expires_in, 'seconds');
             this.refreshToken = response.data.refresh_token;
         } catch (error) {
-            console.log(error);
+            ///console.log(error);
         }
     }
 
@@ -146,7 +146,7 @@ export default class BeFake {
             this.firebaseToken = obj.firebase.token;
             this.firebaseExpiration = moment(obj.firebase.expires);
             this.userId = obj.userId;
-            console.log('Loaded token successfully');
+            ///console.log('Loaded token successfully');
             await this.refreshToken(), await this.firebaseRefreshTokens();
             return {
                 done: true,
@@ -241,10 +241,10 @@ export default class BeFake {
 
             // Exception handling
             if (response.status !== 200) {
-                console.log(
-                    'Token refresh failed(l164), error: ',
-                    response.data,
-                );
+                // console.log(
+                //     'Token refresh failed(l164), error: ',
+                //     response.data,
+                // );
                 return;
             }
 
