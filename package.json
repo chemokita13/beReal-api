@@ -1,9 +1,9 @@
 {
   "name": "be-real-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
+  "description": "A bereal unoffical api",
+  "author": "@chemokita13 on github.com",
+  "private": false,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
