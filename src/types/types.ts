@@ -1,3 +1,5 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export type APIresponse = {
     status: number;
     message: string;
@@ -15,12 +17,39 @@ export type AccessOrFirebase = {
     expires: string;
 };
 
-export type PostData = {
+export class PostData {
+    @ApiProperty({
+        required: false,
+        default: false,
+    })
     resize?: boolean;
+    @ApiProperty({
+        required: false,
+        default: true,
+    })
     late?: boolean;
+    @ApiProperty({
+        required: true,
+        type: 'friends || friends-of-friends || public',
+    })
     visibility: string;
+    @ApiProperty({
+        required: false,
+        default: 0,
+    })
     retakes?: number;
+    @ApiProperty({
+        required: false,
+    })
     caption?: string;
-    taken_at?: string; // Date
-    location?: [number, number]; // [longitude, latitude]
-};
+    @ApiProperty({
+        required: false,
+        type: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+    })
+    taken_at?: string;
+    @ApiProperty({
+        required: false,
+        type: '[number(lat), number(lon)]',
+    })
+    location?: [number, number];
+}
