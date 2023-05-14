@@ -14,3 +14,15 @@ export type AccessOrFirebase = {
     token: string;
     expires: string;
 };
+
+export type PostData = {
+    img1: string; // Uint8Array
+    img2: string; // Uint8Array
+    resize?: boolean;
+    late?: boolean;
+    visibility: string;
+    retakes?: number;
+    caption?: string;
+    taken_at?: string; // Date
+    location?: [number, number]; // [longitude, latitude]
+};
