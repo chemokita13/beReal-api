@@ -3,7 +3,7 @@ import { FriendsService } from './friends.service';
 import { APIresponse } from 'src/types/types';
 import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('friends')
+@ApiTags('Friends')
 @Controller('Friends')
 export class FriendsController {
     constructor(private readonly friendsService: FriendsService) {}
