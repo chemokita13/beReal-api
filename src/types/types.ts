@@ -16,8 +16,6 @@ export type AccessOrFirebase = {
 };
 
 export type PostData = {
-    img1: string; // Uint8Array
-    img2: string; // Uint8Array
     resize?: boolean;
     late?: boolean;
     visibility: string;
