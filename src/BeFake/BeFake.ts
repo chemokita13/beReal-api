@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import sharp from 'sharp'; // to download and resize images
+import * as sharp from 'sharp'; // to download and resize images
 import * as moment from 'moment';
 import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
@@ -431,6 +431,8 @@ export default class BeFake {
                 data: postUploaded,
             };
         } catch (error) {
+            console.log('🚀 ~ file: BeFake.ts:434 ~ BeFake ~ error:', error);
+
             return {
                 done: false,
                 msg: 'Error uploading post',

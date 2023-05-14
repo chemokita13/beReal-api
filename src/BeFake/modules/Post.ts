@@ -1,4 +1,4 @@
-import moment from 'moment';
+import * as moment from 'moment';
 import BeFake from '../BeFake';
 import { PostUpload } from './PostUpload';
 import axios from 'axios';

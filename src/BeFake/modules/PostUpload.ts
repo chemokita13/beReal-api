@@ -1,4 +1,4 @@
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 import BeFake from '../BeFake';
 import axios from 'axios';
 
