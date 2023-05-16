@@ -22,6 +22,7 @@ import {
 @Controller('post')
 export class PostController {
     constructor(private readonly postService: PostService) {}
+    /// I dont know why, but that does not work in swagger api
     @ApiExtraModels(PostData)
     @ApiParam({
         name: 'img1',
@@ -38,13 +39,17 @@ export class PostController {
     @ApiParam({
         name: 'post data',
         description: 'Post data',
-        type: 'object',
+        type: 'string',
         required: true,
         schema: {
-            type: 'PostData see it scrolling down',
+            description: 'PostData see it scrolling down',
         },
     })
-    @ApiOperation({ summary: 'Create a new post' })
+    @ApiOperation({
+        summary: 'Create a new post',
+        description:
+            'All params are a formData. NOT WORKING IN SWAGGER (but yes with postman, fetch, axios...)',
+    })
     @ApiResponse({
         description: `Post created.`,
         status: 200,
@@ -137,7 +142,7 @@ export class PostController {
             return Promise.resolve({
                 status: 500,
                 message:
-                    'Internal server error, try again or contact support in github.com/chemokita13',
+                    'Internal server error, try agaim, maybe you are in swagger (that route does not work on id) or contact support in github.com/chemokita13',
                 data: error,
             });
         }
