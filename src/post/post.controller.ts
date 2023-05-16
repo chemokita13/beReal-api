@@ -10,7 +10,6 @@ import { PostService } from './post.service';
 import { APIresponse, PostData } from 'src/types/types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
-    ApiBody,
     ApiExtraModels,
     ApiHeader,
     ApiOperation,
@@ -124,12 +123,23 @@ export class PostController {
         @UploadedFiles()
         files: { img1?: Express.Multer.File[]; img2?: Express.Multer.File[] },
     ): Promise<APIresponse> {
-        const token = req.headers.token;
-        return this.postService.createPost(
-            token,
-            postData,
-            files.img1[0].buffer,
-            files.img2[0].buffer,
-        );
+        //* I used try/catch statemend because I don't know why, but sometimes the multer interceptor doesn't work
+        try {
+            const token = req.headers.token;
+            return this.postService.createPost(
+                token,
+                postData,
+                files.img1[0].buffer,
+                files.img2[0].buffer,
+            );
+        } catch (error) {
+            // Used Promise.resolve({}) because the method must return a Promise<APIresponse>
+            return Promise.resolve({
+                status: 500,
+                message:
+                    'Internal server error, try again or contact support in github.com/chemokita13',
+                data: error,
+            });
+        }
     }
 }
