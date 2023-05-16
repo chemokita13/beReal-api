@@ -142,4 +142,75 @@ export class PostController {
             });
         }
     }
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @ApiResponse({
+        description: `Post created.`,
+        status: 200,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'Comment created',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiParam({
+        name: 'postId',
+        description: 'Post id, you can get it in /friends/feed',
+        type: 'string',
+        example: '0btnwqsohhhznB00NEFV2',
+    })
+    @ApiParam({
+        name: 'comment',
+        description: 'Comment content',
+        type: 'string',
+        example: 'Nice post! I like it!',
+    })
+    @ApiOperation({ summary: 'Comment a post' })
+    @Post('/comment')
+    commentPost(
+        @Req() req: any,
+        @Body() body: { postId: string; comment: string },
+    ): Promise<APIresponse> {
+        const token = req.headers.token;
+        const { postId, comment } = body;
+        return this.postService.commentPost(token, postId, comment);
+    }
 }

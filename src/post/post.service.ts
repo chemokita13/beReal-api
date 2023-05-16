@@ -66,4 +66,45 @@ export class PostService {
             };
         }
     }
+    async commentPost(
+        token: string,
+        postId: string,
+        comment: string,
+    ): Promise<APIresponse> {
+        try {
+            // Get tokens data and status from Object
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                return {
+                    status: 400,
+                    message: 'Token not generated',
+                    data: data,
+                };
+            }
+            const bf: BeFake = new BeFake(data);
+            const commentResponse: BeFakeResponse = await bf.commentPost(
+                postId,
+                comment,
+            );
+            if (!commentResponse.done) {
+                return {
+                    status: 400,
+                    message: 'Comment not created',
+                    data: commentResponse,
+                };
+            }
+            return {
+                status: 200,
+                message: 'Comment created',
+                data: commentResponse.data.data,
+            };
+        } catch (error) {
+            return {
+                status: 500,
+                message: 'Internal Server Error',
+                data: error,
+            };
+        }
+    }
 }
