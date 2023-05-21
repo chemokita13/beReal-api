@@ -322,13 +322,7 @@ export default class BeFake {
 
     // Get friends feed
     async getFriendsFeed(): Promise<BeFakeResponse> {
-        /**
-         * option:
-         * 0: return data
-         * 1: save JSON file with data
-         * 2: create path and user folders with data and download images
-         */
-        const response = await this._apiRequest('GET', 'feeds/friends');
+        const response = await this._apiRequest('GET', 'feeds/friends-v1');
         try {
             return {
                 done: true,
