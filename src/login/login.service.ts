@@ -38,9 +38,7 @@ export class LoginService {
                 return {
                     status: 200,
                     message: 'OTP sent',
-                    data: {
-                        otpSesion: response.data,
-                    },
+                    data: response.data,
                 };
             }
             return {
