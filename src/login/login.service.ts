@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import BeFake from 'src/BeFake/BeFake';
 import { BeFakeResponse } from 'src/BeFake/types/BeFakeResponse';
@@ -89,28 +89,42 @@ export class LoginService {
     }
 
     async refreshToken(token): Promise<any> {
-        const { status, data }: APIresponse = await this.getToken(token);
-        if (status != 200) {
+        try {
+            const { status, data }: APIresponse = await this.getToken(token);
+            if (status != 200) {
+                return {
+                    status: 400,
+                    message: 'Token not generated',
+                    data: data,
+                };
+            }
+            const oldTokenObj: tokenObj = data;
+            const bf = new BeFake(oldTokenObj);
+            const BfResponse: BeFakeResponse = await bf.refreshToken();
+            if (!BfResponse.done) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not refreshed',
+                        data: BfResponse.data,
+                    },
+                    400,
+                );
+            }
             return {
-                status: 400,
-                message: 'Token not generated',
-                data: data,
-            };
-        }
-        const oldTokenObj: tokenObj = data;
-        const bf = new BeFake(oldTokenObj);
-        const BfResponse: BeFakeResponse = await bf.refreshToken();
-        if (!BfResponse.done) {
-            return {
-                status: 400,
-                message: 'Token not refreshed',
+                status: 201,
+                message: 'Token refreshed',
                 data: BfResponse.data,
             };
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
-        return {
-            status: 200,
-            message: 'Token refreshed',
-            data: BfResponse.data,
-        };
     }
 }

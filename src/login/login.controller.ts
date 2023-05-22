@@ -136,8 +136,61 @@ export class LoginController {
         return this.loginService.verifyCode(body);
     }
 
+    @ApiParam({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        type: 'string',
+        example: 'JWT_TOKEN',
+    })
+    @ApiOperation({ summary: 'Refresh token' })
+    @ApiResponse({
+        description: `Token refreshed.`,
+        status: 200,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'Token refreshed',
+                        data: {
+                            token: 'JWT_TOKEN',
+                        },
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Token not refreshed.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not refreshed',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'Any error',
+                    },
+                },
+            },
+        },
+    })
     @Post('/refresh')
     RefreshToken(@Body() body: { token: string }): Promise<any> {
-        return this.loginService.refreshToken(body);
+        return this.loginService.refreshToken(body.token);
     }
 }
