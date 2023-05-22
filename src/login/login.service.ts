@@ -88,7 +88,7 @@ export class LoginService {
         }
     }
 
-    async refreshToken(token): Promise<any> {
+    async refreshToken(token: string): Promise<any> {
         try {
             const { status, data }: APIresponse = await this.getToken(token);
             if (status != 200) {
@@ -111,10 +111,11 @@ export class LoginService {
                     400,
                 );
             }
+            const newToken: string = await this.tokenize(BfResponse.data);
             return {
                 status: 201,
                 message: 'Token refreshed',
-                data: BfResponse.data,
+                data: { token: newToken },
             };
         } catch (error) {
             throw new HttpException(
