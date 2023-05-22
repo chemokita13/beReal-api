@@ -30,31 +30,38 @@ export class LoginService {
         }
     }
 
-    async sendCode(body: { phone: string }): Promise<APIresponse> {
+    public async sendCode(body: { phone: string }): Promise<APIresponse> {
         try {
             const bf = new BeFake();
             const response: BeFakeResponse = await bf.sendOtpVonage(body.phone);
             if (response.done) {
                 return {
-                    status: 200,
+                    status: 201,
                     message: 'OTP sent',
                     data: response.data,
                 };
             }
-            return {
-                status: 400,
-                message: 'OTP not sent',
-            };
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'OTP not sent',
+                    data: response.data,
+                },
+                400,
+            );
         } catch (error) {
-            return {
-                status: 500,
-                message: 'Internal server error',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
     }
 
-    async verifyCode(body: {
+    public async verifyCode(body: {
         code: string;
         otpSesion: string;
     }): Promise<APIresponse> {
@@ -75,20 +82,27 @@ export class LoginService {
                     },
                 };
             }
-            return {
-                status: 400,
-                message: 'OTP not verified',
-            };
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'OTP not verified',
+                    data: response.data,
+                },
+                400,
+            );
         } catch (error) {
-            return {
-                status: 500,
-                message: 'Internal server error',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
     }
 
-    async refreshToken(token: string): Promise<any> {
+    public async refreshToken(token: string): Promise<any> {
         try {
             const { status, data }: APIresponse = await this.getToken(token);
             if (status != 200) {

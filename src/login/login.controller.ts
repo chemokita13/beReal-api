@@ -18,7 +18,7 @@ export class LoginController {
     @ApiOperation({ summary: 'Send otp code to your phone' })
     @ApiResponse({
         description: `OTP sent.`,
-        status: 200,
+        status: 201,
         content: {
             'application/json': {
                 schema: {
@@ -85,7 +85,7 @@ export class LoginController {
     @ApiOperation({ summary: 'Verify otp code' })
     @ApiResponse({
         description: `OTP verified.`,
-        status: 200,
+        status: 201,
         content: {
             'application/json': {
                 schema: {
