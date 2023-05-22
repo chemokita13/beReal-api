@@ -11,7 +11,7 @@ import { JWT_SECRET } from './constants';
         JwtModule.register({
             global: true,
             secret: JWT_SECRET,
-            signOptions: { expiresIn: '48h' },
+            signOptions: { expiresIn: '30d' },
         }),
     ],
     exports: [LoginService],
