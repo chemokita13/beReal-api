@@ -135,4 +135,9 @@ export class LoginController {
     ): Promise<APIresponse> {
         return this.loginService.verifyCode(body);
     }
+
+    @Post('/refresh')
+    RefreshToken(@Body() body: { token: string }): Promise<any> {
+        return this.loginService.refreshToken(body);
+    }
 }

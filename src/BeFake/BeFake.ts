@@ -111,7 +111,7 @@ export default class BeFake {
         return objToSave;
     }
 
-    async refreshToken(): Promise<void> {
+    async refreshToken(): Promise<BeFakeResponse> {
         try {
             const response = await axios.post(
                 'https://auth.bereal.team/token',
@@ -128,8 +128,30 @@ export default class BeFake {
             this.token = response.data.access_token;
             this.expiration = moment().add(response.data.expires_in, 'seconds');
             this.refreshToken = response.data.refresh_token;
+            const dataToReturn: tokenObj = {
+                access: {
+                    refresh_token: this.refresh_token,
+                    token: this.token,
+                    expires: this.expiration.format(),
+                },
+                firebase: {
+                    refresh_token: this.firebase_refresh_token,
+                    token: this.firebaseToken,
+                    expires: this.firebaseExpiration.format(),
+                },
+                userId: this.userId,
+            };
+            return {
+                done: true,
+                msg: 'Token refreshed successfully',
+                data: dataToReturn,
+            };
         } catch (error) {
-            ///console.log(error);
+            return {
+                done: false,
+                msg: 'Something went wrong',
+                data: error,
+            };
         }
     }
 

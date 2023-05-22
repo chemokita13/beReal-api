@@ -87,4 +87,30 @@ export class LoginService {
             };
         }
     }
+
+    async refreshToken(token): Promise<any> {
+        const { status, data }: APIresponse = await this.getToken(token);
+        if (status != 200) {
+            return {
+                status: 400,
+                message: 'Token not generated',
+                data: data,
+            };
+        }
+        const oldTokenObj: tokenObj = data;
+        const bf = new BeFake(oldTokenObj);
+        const BfResponse: BeFakeResponse = await bf.refreshToken();
+        if (!BfResponse.done) {
+            return {
+                status: 400,
+                message: 'Token not refreshed',
+                data: BfResponse.data,
+            };
+        }
+        return {
+            status: 200,
+            message: 'Token refreshed',
+            data: BfResponse.data,
+        };
+    }
 }
