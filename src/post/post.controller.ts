@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    HttpException,
     Post,
     Req,
     UploadedFiles,
@@ -81,15 +82,14 @@ export class PostController {
         },
     })
     @ApiResponse({
-        description: `Internal server error.`,
-        status: 500,
+        description: `Post not created.`,
+        status: 400,
         content: {
             'application/json': {
                 schema: {
                     example: {
-                        status: 500,
-                        message: 'Internal server error',
-                        data: 'LARGE JSON WITH ERROR DATA',
+                        status: 400,
+                        message: 'Post not created',
                     },
                 },
             },
@@ -139,12 +139,15 @@ export class PostController {
             );
         } catch (error) {
             // Used Promise.resolve({}) because the method must return a Promise<APIresponse>
-            return Promise.resolve({
-                status: 500,
-                message:
-                    'Internal server error, try agaim, maybe you are in swagger (that route does not work on id) or contact support in github.com/chemokita13',
-                data: error,
-            });
+            throw new HttpException(
+                {
+                    status: 500,
+                    message:
+                        'Internal server error, try agaim, maybe you are in swagger (that route does not work on id) or contact support in github.com/chemokita13',
+                    data: error,
+                },
+                500,
+            );
         }
     }
     @ApiHeader({
@@ -154,7 +157,7 @@ export class PostController {
     })
     @ApiResponse({
         description: `Post created.`,
-        status: 200,
+        status: 201,
         content: {
             'application/json': {
                 schema: {

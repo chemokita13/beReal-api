@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import BeFake from 'src/BeFake/BeFake';
 import { BeFakeResponse } from 'src/BeFake/types/BeFakeResponse';
 import { LoginService } from 'src/login/login.service';
@@ -28,11 +28,14 @@ export class PostService {
             const { status, data }: APIresponse =
                 await this.loginService.getToken(token);
             if (status != 200) {
-                return {
-                    status: 400,
-                    message: 'Token not generated',
-                    data: data,
-                };
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
             }
             const bf: BeFake = new BeFake(data);
             const post: BeFakeResponse = await bf.postUpload(
@@ -47,23 +50,29 @@ export class PostService {
                 postObj.location,
             );
             if (!post.done) {
-                return {
-                    status: 400,
-                    message: 'Post not created',
-                    data: post,
-                };
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Post not created',
+                        data: post,
+                    },
+                    400,
+                );
             }
             return {
-                status: 200,
+                status: 201,
                 message: 'Post created',
                 data: post.data.data,
             };
         } catch (error) {
-            return {
-                status: 500,
-                message: 'Internal Server Error',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
     }
     async commentPost(
