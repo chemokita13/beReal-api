@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import BeFake from 'src/BeFake/BeFake';
 import { LoginService } from 'src/login/login.service';
 import { APIresponse } from 'src/types/types';
@@ -11,11 +11,14 @@ export class FriendsService {
             const { status, data }: APIresponse =
                 await this.loginService.getToken(token);
             if (status != 200) {
-                return {
-                    status: 400,
-                    message: 'Token not generated',
-                    data: data,
-                };
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
             }
             const bf: BeFake = new BeFake(data);
             const feed = await bf.getFriendsFeed();
@@ -25,11 +28,14 @@ export class FriendsService {
                 data: feed,
             };
         } catch (error) {
-            return {
-                status: 500,
-                message: 'Internal server error',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
     }
 
@@ -38,11 +44,14 @@ export class FriendsService {
             const { status, data }: APIresponse =
                 await this.loginService.getToken(token);
             if (status != 200) {
-                return {
-                    status: 400,
-                    message: 'Token not generated',
-                    data: data,
-                };
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
             }
             const bf: BeFake = new BeFake(data);
             const friends = await bf.getFriends();
@@ -52,11 +61,14 @@ export class FriendsService {
                 data: friends,
             };
         } catch (error) {
-            return {
-                status: 500,
-                message: 'Internal server error',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
     }
 }
