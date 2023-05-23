@@ -114,22 +114,15 @@ export class LoginService {
             }
             const oldTokenObj: tokenObj = data;
             const bf = new BeFake(oldTokenObj);
-            const BfResponse: BeFakeResponse = await bf.refreshToken();
-            if (!BfResponse.done) {
-                throw new HttpException(
-                    {
-                        status: 400,
-                        message: 'Token not refreshed',
-                        data: BfResponse.data,
-                    },
-                    400,
-                );
-            }
-            const newToken: string = await this.tokenize(BfResponse.data);
+            await bf.refreshToken();
+            await bf.firebaseRefreshTokens();
+            const tokenObj: tokenObj = bf.saveToken();
             return {
-                status: 201,
+                status: 200,
                 message: 'Token refreshed',
-                data: { token: newToken },
+                data: {
+                    tokenObj: await this.tokenize(tokenObj),
+                },
             };
         } catch (error) {
             throw new HttpException(
