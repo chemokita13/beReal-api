@@ -143,7 +143,7 @@ export class PostController {
                 {
                     status: 500,
                     message:
-                        'Internal server error, try agaim, maybe you are in swagger (that route does not work on id) or contact support in github.com/chemokita13',
+                        'Internal server error, try again, maybe you are in swagger (that route does not work on id) or contact support in github.com/chemokita13',
                     data: error,
                 },
                 500,
