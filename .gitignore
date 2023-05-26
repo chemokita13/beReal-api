@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # Deployers
 fly.toml
+
+# misc
+.env
