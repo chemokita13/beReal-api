@@ -106,7 +106,7 @@ export class PostService {
             return {
                 status: 200,
                 message: 'Comment created',
-                data: commentResponse.data.data,
+                data: commentResponse.data,
             };
         } catch (error) {
             return {
