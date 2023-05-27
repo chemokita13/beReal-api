@@ -122,4 +122,51 @@ export class PostService {
             );
         }
     }
+    async deletePostComment(
+        token: string,
+        postId: string,
+        commentId: string,
+    ): Promise<APIresponse> {
+        try {
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            const bf: BeFake = new BeFake(data);
+            const deleteCommentResponse: BeFakeResponse =
+                await bf.deleteComment(postId, commentId);
+            if (!deleteCommentResponse.done) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Comment not deleted',
+                        data: deleteCommentResponse,
+                    },
+                    400,
+                );
+            }
+            return {
+                status: 201,
+                message: 'Comment deleted',
+                data: deleteCommentResponse.data,
+            };
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
+        }
+    }
 }

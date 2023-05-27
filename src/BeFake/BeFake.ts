@@ -466,4 +466,34 @@ export default class BeFake {
             data: response,
         };
     }
+
+    async deleteComment(
+        postId: string,
+        commentId: string,
+    ): Promise<BeFakeResponse> {
+        const payload = {
+            postId: postId,
+        };
+        const data = {
+            commentIds: [commentId],
+        };
+        const response = await this._apiRequest(
+            'DELETE',
+            'content/comments',
+            data,
+            payload,
+        );
+        if (response.status == !201) {
+            return {
+                done: false,
+                msg: 'Error deleting comment',
+                data: response,
+            };
+        }
+        return {
+            done: true,
+            msg: 'Comment deleted successfully',
+            data: response,
+        };
+    }
 }

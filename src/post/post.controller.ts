@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Delete,
     HttpException,
     Post,
     Req,
@@ -220,5 +221,77 @@ export class PostController {
         const token = req.headers.token;
         const { postId, comment } = body;
         return this.postService.commentPost(token, postId, comment);
+    }
+
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @ApiParam({
+        name: 'postId',
+        description: 'Post id, you can get it in /friends/feed',
+        type: 'string',
+        example: '0btnwqsohhhznB00NEFV2',
+    })
+    @ApiParam({
+        name: 'commentId',
+        description: 'Comment id, you can get it in /friends/feed',
+        type: 'string',
+        example: '0btnwqsohhhznB00NEFV2',
+    })
+    @ApiOperation({ summary: 'Delete a comment' })
+    @ApiResponse({
+        description: `Comment deleted.`,
+        status: 201,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 201,
+                        message: 'Comment deleted',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @Delete('comment')
+    deletePostComment(
+        @Req() req: any,
+        @Body() body: { postId: string; commentId: string },
+    ): Promise<APIresponse> {
+        const token = req.headers.token;
+        const { postId, commentId } = body;
+        return this.postService.deletePostComment(token, postId, commentId);
     }
 }
