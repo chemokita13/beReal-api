@@ -97,23 +97,29 @@ export class PostService {
                 comment,
             );
             if (!commentResponse.done) {
-                return {
-                    status: 400,
-                    message: 'Comment not created',
-                    data: commentResponse,
-                };
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Comment not created',
+                        data: commentResponse,
+                    },
+                    400,
+                );
             }
             return {
-                status: 200,
+                status: 201,
                 message: 'Comment created',
                 data: commentResponse.data,
             };
         } catch (error) {
-            return {
-                status: 500,
-                message: 'Internal Server Error',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
         }
     }
 }
