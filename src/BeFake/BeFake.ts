@@ -111,7 +111,7 @@ export default class BeFake {
         return objToSave;
     }
 
-    async refreshToken(): Promise<BeFakeResponse> {
+    async refreshTokens(): Promise<BeFakeResponse> {
         try {
             const response = await axios.post(
                 'https://auth.bereal.team/token',
@@ -127,7 +127,7 @@ export default class BeFake {
             );
             this.token = response.data.access_token;
             this.expiration = moment().add(response.data.expires_in, 'seconds');
-            this.refreshToken = response.data.refresh_token;
+            this.refresh_token = response.data.refresh_token;
             const dataToReturn: tokenObj = {
                 access: {
                     refresh_token: this.refresh_token,
@@ -144,7 +144,10 @@ export default class BeFake {
             return {
                 done: true,
                 msg: 'Token refreshed successfully',
-                data: dataToReturn,
+                data: {
+                    response: response.data,
+                    mainData: dataToReturn,
+                },
             };
         } catch (error) {
             return {
@@ -168,8 +171,9 @@ export default class BeFake {
             this.firebaseToken = obj.firebase.token;
             this.firebaseExpiration = moment(obj.firebase.expires);
             this.userId = obj.userId;
-            ///console.log('Loaded token successfully');
-            await this.refreshToken(), await this.firebaseRefreshTokens();
+            //console.log('Loaded token successfully');
+            //* await this.refreshTokens();
+            //* await this.firebaseRefreshTokens();
             return {
                 done: true,
                 msg: 'Tokens loaded successfully',
@@ -224,12 +228,13 @@ export default class BeFake {
             // refresh the token
             await this.firebaseRefreshTokens();
             // grant the access token
-            await this.grantAccessToken();
+            const k = await this.grantAccessToken();
             // save user info (tokens, userId...)
             ///await this.saveToken();
             return {
                 done: true,
                 msg: 'OTP verified successfully, call saveToken() to get the tokens',
+                data: k,
             };
         } catch (error) {
             return {
@@ -270,7 +275,6 @@ export default class BeFake {
                 return;
             }
 
-            //!console.log(response.data.refresh_token);
             this.firebase_refresh_token = response.data.refresh_token;
             this.firebaseToken = response.data.id_token;
             this.firebaseExpiration = moment().add(

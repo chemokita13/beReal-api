@@ -78,7 +78,7 @@ export class LoginService {
                     status: 200,
                     message: 'OTP verified',
                     data: {
-                        tokenObj: await this.tokenize(tokenObj),
+                        token: await this.tokenize(tokenObj),
                     },
                 };
             }
@@ -106,22 +106,36 @@ export class LoginService {
         try {
             const { status, data }: APIresponse = await this.getToken(token);
             if (status != 200) {
-                return {
-                    status: 400,
-                    message: 'Token not generated',
-                    data: data,
-                };
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
             }
             const oldTokenObj: tokenObj = data;
             const bf = new BeFake(oldTokenObj);
-            await bf.refreshToken();
             await bf.firebaseRefreshTokens();
+            const refreshTokensResponse: BeFakeResponse =
+                await bf.refreshTokens();
+            if (!refreshTokensResponse.done) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not refreshed',
+                        data: refreshTokensResponse.data,
+                    },
+                    400,
+                );
+            }
             const tokenObj: tokenObj = bf.saveToken();
             return {
                 status: 200,
                 message: 'Token refreshed',
                 data: {
-                    tokenObj: await this.tokenize(tokenObj),
+                    token: await this.tokenize(tokenObj),
                 },
             };
         } catch (error) {
