@@ -22,11 +22,14 @@ export class LoginService {
                 data: await this.jwtService.verifyAsync(token),
             };
         } catch (error) {
-            return {
-                status: 400,
-                message: 'Token not generated',
-                data: error,
-            };
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'Token not generated',
+                    data: error,
+                },
+                400,
+            );
         }
     }
 
@@ -75,7 +78,7 @@ export class LoginService {
             if ((response.done = true)) {
                 const tokenObj: tokenObj = bf.saveToken();
                 return {
-                    status: 200,
+                    status: 201,
                     message: 'OTP verified',
                     data: {
                         token: await this.tokenize(tokenObj),
@@ -132,7 +135,7 @@ export class LoginService {
             }
             const tokenObj: tokenObj = bf.saveToken();
             return {
-                status: 200,
+                status: 201,
                 message: 'Token refreshed',
                 data: {
                     token: await this.tokenize(tokenObj),

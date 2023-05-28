@@ -145,7 +145,7 @@ export class LoginController {
     @ApiOperation({ summary: 'Refresh token' })
     @ApiResponse({
         description: `Token refreshed.`,
-        status: 200,
+        status: 201,
         content: {
             'application/json': {
                 schema: {
