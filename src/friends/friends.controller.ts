@@ -121,4 +121,61 @@ export class FriendsController {
         const token = req.headers.token;
         return this.friendsService.getFriends(token);
     }
+
+    @ApiOperation({ summary: 'Get your users info' })
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @ApiResponse({
+        description: `User info generated.`,
+        status: 200,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'User info generated',
+                        data: 'LARGE JSON WITH USER INFO DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @Get('/me')
+    GetUserInfo(@Req() req: any): Promise<APIresponse> {
+        const token = req.headers.token;
+        return this.friendsService.getUserInfo(token);
+    }
 }

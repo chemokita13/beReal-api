@@ -500,4 +500,13 @@ export default class BeFake {
             data: response,
         };
     }
+
+    async getUserInfo(): Promise<BeFakeResponse> {
+        const response = await this._apiRequest('GET', 'person/me');
+        return {
+            done: true,
+            msg: 'User info returned successfully',
+            data: response,
+        };
+    }
 }
