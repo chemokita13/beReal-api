@@ -59,6 +59,104 @@ export default class BeFake {
         return result;
     }
 
+    async sendOtpCloud(phoneNumber: string): Promise<BeFakeResponse> {
+        try {
+            const data = {
+                phoneNumber: phoneNumber,
+            };
+            const loginUrl: string =
+                'https://us-central1-befake-623af.cloudfunctions.net/login';
+
+            //! Doesn't work with axios, but works with fetch
+            // const response = await axios.post(loginUrl, JSON.stringify(data), {
+            //     headers: {
+            //         Origin: '*',
+            //         'x-requested-with': 'XMLHttpRequest',
+            //     },
+            // })
+            const req = await fetch(loginUrl, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/text',
+                },
+            });
+            if (req.ok) {
+                const responseData = await req.json();
+                this.otpSession = responseData.sessionInfo;
+                return {
+                    done: true,
+                    msg: 'OTP sent successfully',
+                    data: responseData,
+                };
+            }
+            return {
+                done: false,
+                msg: 'Something went wrong',
+            };
+        } catch (error) {
+            console.log(
+                '🚀 ~ file: BeFake.ts:98 ~ BeFake ~ sendOtpCloud ~ error:',
+                error,
+            );
+
+            return {
+                done: false,
+                msg: 'Something went wrong',
+                data: error,
+            };
+        }
+    }
+
+    async verifyOtpCloud(otpCode: string, otpSession: string) {
+        try {
+            const data = {
+                code: otpCode,
+                sessionInfo: otpSession,
+                operation: 'SIGN_UP_OR_IN',
+            };
+            const loginUrl: string =
+                'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPhoneNumber?key=AIzaSyDwjfEeparokD7sXPVQli9NsTuhT6fJ6iA';
+            //const response = await axios.post(loginUrl, data);
+            const req = await fetch(loginUrl, {
+                method: 'POST',
+                body: JSON.stringify(data),
+            });
+            if (!req.ok) {
+                return {
+                    done: false,
+                    msg: 'Something went wrong',
+                    data: await req.json(),
+                };
+            }
+            const response = await req.json();
+            this.firebase_refresh_token = response.refreshToken;
+            console.log(
+                '🚀 ~ file: BeFake.ts:117 ~ BeFake ~ verifyOtpCloud ~ this.firebase_refresh_token:',
+                this.firebase_refresh_token,
+            );
+            // refresh the token
+            await this.firebaseRefreshTokens();
+            const log = await this.grantAccessToken();
+            // save user info (tokens, userId...)
+            return {
+                done: true,
+                msg: 'OTP verified successfully, call saveToken() to get the tokens',
+                data: log,
+            };
+        } catch (error) {
+            console.log(
+                '🚀 ~ file: BeFake.ts:117 ~ BeFake ~ verifyOtpCloud ~ error:',
+                error,
+            );
+            return {
+                done: false,
+                msg: 'Something went wrong',
+                data: error,
+            };
+        }
+    }
+
     // Send a mobile verification (vonage) code to a phone number via SMS
     async sendOtpVonage(phoneNumber: string): Promise<BeFakeResponse> {
         const data = {

@@ -34,9 +34,13 @@ export class LoginService {
     }
 
     public async sendCode(body: { phone: string }): Promise<APIresponse> {
+        console.log(
+            '🚀 ~ file: login.service.ts:37 ~ LoginService ~ sendCode ~ phone:',
+            body.phone,
+        );
         try {
             const bf = new BeFake();
-            const response: BeFakeResponse = await bf.sendOtpVonage(body.phone);
+            const response: BeFakeResponse = await bf.sendOtpCloud(body.phone);
             if (response.done) {
                 return {
                     status: 201,
@@ -53,6 +57,10 @@ export class LoginService {
                 400,
             );
         } catch (error) {
+            console.log(
+                '🚀 ~ file: login.service.ts:56 ~ LoginService ~ sendCode ~ error:',
+                error,
+            );
             throw new HttpException(
                 {
                     status: 500,
@@ -70,12 +78,12 @@ export class LoginService {
     }): Promise<APIresponse> {
         try {
             const bf = new BeFake();
-            const response: BeFakeResponse = await bf.verifyOtpVonage(
+            const response: BeFakeResponse = await bf.verifyOtpCloud(
                 body.code,
                 body.otpSesion,
             );
 
-            if ((response.done = true)) {
+            if (response.done) {
                 const tokenObj: tokenObj = bf.saveToken();
                 return {
                     status: 201,
