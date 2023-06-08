@@ -34,10 +34,6 @@ export class LoginService {
     }
 
     public async sendCode(body: { phone: string }): Promise<APIresponse> {
-        console.log(
-            '🚀 ~ file: login.service.ts:37 ~ LoginService ~ sendCode ~ phone:',
-            body.phone,
-        );
         try {
             const bf = new BeFake();
             const response: BeFakeResponse = await bf.sendOtpCloud(body.phone);
@@ -57,10 +53,6 @@ export class LoginService {
                 400,
             );
         } catch (error) {
-            console.log(
-                '🚀 ~ file: login.service.ts:56 ~ LoginService ~ sendCode ~ error:',
-                error,
-            );
             throw new HttpException(
                 {
                     status: 500,

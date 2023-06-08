@@ -61,45 +61,74 @@ export default class BeFake {
 
     async sendOtpCloud(phoneNumber: string): Promise<BeFakeResponse> {
         try {
-            const data = {
-                phoneNumber: phoneNumber,
-            };
-            const loginUrl: string =
-                'https://us-central1-befake-623af.cloudfunctions.net/login';
-
-            //! Doesn't work with axios, but works with fetch
-            // const response = await axios.post(loginUrl, JSON.stringify(data), {
-            //     headers: {
-            //         Origin: '*',
-            //         'x-requested-with': 'XMLHttpRequest',
-            //     },
-            // })
-            const req = await fetch(loginUrl, {
+            const firstData = JSON.stringify({
+                appToken:
+                    '54F80A258C35A916B38A3AD83CA5DDD48A44BFE2461F90831E0F97EBA4BB2EC7',
+            });
+            const firstUrl =
+                'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyClient?key=' +
+                this.google_api_key;
+            const firstReq = await fetch(firstUrl, {
                 method: 'POST',
-                body: JSON.stringify(data),
+                body: firstData,
                 headers: {
-                    'Content-Type': 'application/text',
+                    'content-type': 'application/json',
+                    accept: '*/*',
+                    'x-client-version':
+                        'iOS/FirebaseSDK/9.6.0/FirebaseCore-iOS',
+                    'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
+                    'accept-language': 'en',
+                    'user-agent':
+                        'FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.31.0 iPhone/14.7.1 hw/iPhone9_1',
+                    'x-firebase-locale': 'en',
+                    'x-firebase-gmpid': '1:405768487586:ios:28c4df089ca92b89',
                 },
             });
-            if (req.ok) {
-                const responseData = await req.json();
-                this.otpSession = responseData.sessionInfo;
+            if (!firstReq.ok) {
                 return {
-                    done: true,
-                    msg: 'OTP sent successfully',
-                    data: responseData,
+                    done: false,
+                    msg: 'Something went wrong',
                 };
             }
+            const firstResponse = await firstReq.json();
+            const receipt = firstResponse.receipt;
+            const secondData = JSON.stringify({
+                phoneNumber: phoneNumber,
+                iosReceipt: receipt,
+            });
+            const secondUrl =
+                'https://www.googleapis.com/identitytoolkit/v3/relyingparty/sendVerificationCode?key=' +
+                this.google_api_key;
+            const secondReq = await fetch(secondUrl, {
+                method: 'POST',
+                body: secondData,
+                headers: {
+                    'content-type': 'application/json',
+                    accept: '*/*',
+                    'x-client-version':
+                        'iOS/FirebaseSDK/9.6.0/FirebaseCore-iOS',
+                    'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
+                    'accept-language': 'en',
+                    'user-agent':
+                        'FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.31.0 iPhone/14.7.1 hw/iPhone9_1',
+                    'x-firebase-locale': 'en',
+                    'x-firebase-gmpid': '1:405768487586:ios:28c4df089ca92b89',
+                },
+            });
+            if (!secondReq.ok) {
+                return {
+                    done: false,
+                    msg: 'Something went wrong',
+                };
+            }
+            const secondResponse = await secondReq.json();
+            this.otpSession = secondResponse.sessionInfo;
             return {
-                done: false,
-                msg: 'Something went wrong',
+                done: true,
+                msg: 'OTP code sent',
+                data: { otpSession: secondResponse.sessionInfo },
             };
         } catch (error) {
-            console.log(
-                '🚀 ~ file: BeFake.ts:98 ~ BeFake ~ sendOtpCloud ~ error:',
-                error,
-            );
-
             return {
                 done: false,
                 msg: 'Something went wrong',
@@ -131,10 +160,6 @@ export default class BeFake {
             }
             const response = await req.json();
             this.firebase_refresh_token = response.refreshToken;
-            console.log(
-                '🚀 ~ file: BeFake.ts:117 ~ BeFake ~ verifyOtpCloud ~ this.firebase_refresh_token:',
-                this.firebase_refresh_token,
-            );
             // refresh the token
             await this.firebaseRefreshTokens();
             const log = await this.grantAccessToken();
