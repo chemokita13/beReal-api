@@ -487,6 +487,27 @@ export default class BeFake {
         }
     }
 
+    // Get friends-of-friends feed
+    async getFriendsOfFriendsFeed(): Promise<BeFakeResponse> {
+        const response = await this._apiRequest(
+            'GET',
+            'feeds/friends-of-friends',
+        );
+        try {
+            return {
+                done: true,
+                msg: 'Data returned successfully',
+                data: response,
+            };
+        } catch (error) {
+            return {
+                done: false,
+                msg: 'Error saving data',
+                data: error,
+            };
+        }
+    }
+
     // Get friends info
     async getFriends(): Promise<BeFakeResponse> {
         const response = await this._apiRequest('GET', 'relationships/friends');
