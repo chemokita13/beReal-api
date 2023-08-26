@@ -40,6 +40,39 @@ export class FriendsService {
         }
     }
 
+    async getFriendsOfFriends(token: string): Promise<APIresponse> {
+        try {
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            const bf: BeFake = new BeFake(data);
+            const feed = await bf.getFriendsOfFriendsFeed();
+            return {
+                status: 200,
+                message: 'Feed generated',
+                data: feed,
+            };
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
+        }
+    }
+
     async getFriends(token: string): Promise<APIresponse> {
         try {
             const { status, data }: APIresponse =
