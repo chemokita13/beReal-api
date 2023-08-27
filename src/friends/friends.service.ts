@@ -55,7 +55,12 @@ export class FriendsService {
                 );
             }
             const bf: BeFake = new BeFake(data);
-            const feed = await bf.getFriendsOfFriendsFeed();
+            let respone = await bf.getFriendsOfFriendsFeed();
+            let feed = [...respone.data.data];
+            while (respone.data.next) {
+                respone = await bf.getFriendsOfFriendsFeed(respone.data.next);
+                feed = [...feed, ...respone.data.data];
+            }
             return {
                 status: 200,
                 message: 'Feed generated',
