@@ -603,7 +603,7 @@ export default class BeFake {
             return {
                 done: false,
                 msg: 'Error uploading post',
-                data: error,
+                data: error.data,
             };
         }
     }
