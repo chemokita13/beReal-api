@@ -17,13 +17,13 @@ export class PostService {
     }
     async createPost(
         token: string,
-        postData: string, // string<json:PostData>
+        postData: PostData, // string<json:PostData>
         img1: Buffer,
         img2: Buffer,
     ): Promise<APIresponse> {
         try {
             // Convert string to PostData Object(json)
-            const postObj: PostData = JSON.parse(postData);
+            const postObj: PostData = postData;
             // Get tokens data and status from Object
             const { status, data }: APIresponse =
                 await this.loginService.getToken(token);
@@ -62,7 +62,7 @@ export class PostService {
             return {
                 status: 201,
                 message: 'Post created',
-                data: post.data.data,
+                data: post.data,
             };
         } catch (error) {
             throw new HttpException(

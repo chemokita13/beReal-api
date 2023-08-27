@@ -39,12 +39,66 @@ export class PostController {
         required: true,
     })
     @ApiParam({
-        name: 'post data',
-        description: 'Post data',
-        type: 'string',
+        name: 'visibility',
+        description: 'Post visibility',
+        type: 'string<friends | friends-of-friends | public>',
         required: true,
         schema: {
-            description: 'PostData see it scrolling down',
+            description: 'Post visibility',
+        },
+    })
+    @ApiParam({
+        name: 'resize',
+        description: 'Resize images',
+        type: 'string<boolean>',
+        required: false,
+        schema: {
+            description: 'Resize images',
+        },
+    })
+    @ApiParam({
+        name: 'late',
+        description: 'Late post',
+        type: 'string<boolean>',
+        required: false,
+        schema: {
+            description: 'Late post',
+        },
+    })
+    @ApiParam({
+        name: 'retakes',
+        description: 'Retakes',
+        type: 'string<number>',
+        required: false,
+        schema: {
+            description: 'Retakes',
+        },
+    })
+    @ApiParam({
+        name: 'caption',
+        description: 'Caption',
+        type: 'string',
+        required: false,
+        schema: {
+            description: 'Caption',
+        },
+    })
+    @ApiParam({
+        name: 'taken_at',
+        description: 'Taken at',
+        type: 'string<YYYY-MM-DDTHH:mm:ss.SSS[Z]>',
+        required: false,
+        schema: {
+            description: 'Taken at',
+        },
+    })
+    @ApiParam({
+        name: 'location',
+        description: 'Location',
+        type: 'string<[lat<float>,long<float>]>',
+        required: false,
+        schema: {
+            description: 'Location',
         },
     })
     @ApiOperation({
@@ -124,17 +178,37 @@ export class PostController {
         ]),
     )
     createPost(
-        @Body('postData') postData: string,
         @Req() req: any,
         @UploadedFiles()
         files: { img1?: Express.Multer.File[]; img2?: Express.Multer.File[] },
+        @Body('visibility')
+        visibility: 'friends' | 'friends-of-friends' | 'public',
+        @Body('resize') resize?: string,
+        @Body('late') late?: string,
+        @Body('retakes') retakes?: string,
+        @Body('caption') caption?: string,
+        @Body('taken_at') taken_at?: string,
+        @Body('location') location?: string,
     ): Promise<APIresponse> {
         //* I used try/catch statemend because I don't know why, but sometimes the multer interceptor doesn't work
         try {
             const token = req.headers.token;
             return this.postService.createPost(
                 token,
-                postData,
+                {
+                    visibility,
+                    resize: resize == 'true' ? true : false,
+                    late: late == 'true' ? true : false,
+                    retakes: retakes ? parseInt(retakes) : 0,
+                    caption,
+                    taken_at,
+                    location: location
+                        ? [
+                              parseFloat(location.split(',')[0]),
+                              parseFloat(location.split(',')[1]),
+                          ]
+                        : undefined,
+                },
                 files.img1[0].buffer,
                 files.img2[0].buffer,
             );
