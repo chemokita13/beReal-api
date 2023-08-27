@@ -488,11 +488,14 @@ export default class BeFake {
     }
 
     // Get friends-of-friends feed
-    async getFriendsOfFriendsFeed(): Promise<BeFakeResponse> {
+    async getFriendsOfFriendsFeed(next?: string): Promise<BeFakeResponse> {
         const response = await this._apiRequest(
             'GET',
             'feeds/friends-of-friends',
+            undefined,
+            next && { page: next },
         );
+
         try {
             return {
                 done: true,
