@@ -1,6 +1,7 @@
 import * as sharp from 'sharp';
 import BeFake from '../BeFake';
 import axios from 'axios';
+import { BeFakeResponse } from '../types/BeFakeResponse';
 
 export class PostUpload {
     // Base64 encoded images
@@ -77,32 +78,42 @@ export class PostUpload {
     }
 
     // Upload photos to server (first steps: get path, urls and headers)
-    public async upload(beFake: BeFake): Promise<{}> {
-        const response = await beFake._apiRequest(
-            'get',
-            'content/posts/upload-url',
-            {},
-            { mimeType: 'image/webp' },
-        );
+    public async upload(beFake: BeFake): Promise<BeFakeResponse> {
+        try {
+            const response = await beFake._apiRequest(
+                'get',
+                'content/posts/upload-url',
+                {},
+                { mimeType: 'image/webp' },
+            );
 
-        let headers1 = response.data[0].headers;
-        headers1['Authorization'] = 'Bearer ' + beFake.token;
-        headers1['user-agent'] = beFake.headers['user-agent'];
-        const url1 = response.data[0].url;
-        let headers2 = response.data[1].headers;
-        headers2['Authorization'] = 'Bearer ' + beFake.token;
-        headers2['user-agent'] = beFake.headers['user-agent'];
-        const url2 = response.data[1].url;
+            let headers1 = response.data[0].headers;
+            headers1['Authorization'] = 'Bearer ' + beFake.token;
+            headers1['user-agent'] = beFake.headers['user-agent'];
+            const url1 = response.data[0].url;
+            let headers2 = response.data[1].headers;
+            headers2['Authorization'] = 'Bearer ' + beFake.token;
+            headers2['user-agent'] = beFake.headers['user-agent'];
+            const url2 = response.data[1].url;
 
-        const primary_res = await axios.put(url1, this.primary, {
-            headers: headers1,
-        });
-        const secondary_res = await axios.put(url2, this.secondary, {
-            headers: headers2,
-        });
-        //?console.log(primary_res, secondary_res);
-        this.primaryPath = response.data[0].path;
-        this.secondaryPath = response.data[1].path;
-        return response.data;
+            const primary_res = await axios.put(url1, this.primary, {
+                headers: headers1,
+            });
+            const secondary_res = await axios.put(url2, this.secondary, {
+                headers: headers2,
+            });
+            //?console.log(primary_res, secondary_res);
+            this.primaryPath = response.data[0].path;
+            this.secondaryPath = response.data[1].path;
+            return {
+                done: true,
+                msg: response.data,
+            };
+        } catch (error) {
+            return {
+                done: false,
+                msg: error,
+            };
+        }
     }
 }

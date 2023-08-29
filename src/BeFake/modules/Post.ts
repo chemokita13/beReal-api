@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import BeFake from '../BeFake';
 import { PostUpload } from './PostUpload';
 import axios from 'axios';
-
+import { BeFakeResponse } from '../types/BeFakeResponse';
 export class Post {
     // BeFake object instance
     private beFake: BeFake;
@@ -23,7 +23,7 @@ export class Post {
         caption?: string, // caption is optional
         taken_at?: string,
         location?: [number, number],
-    ): Promise<any> {
+    ): Promise<BeFakeResponse> {
         if (!taken_at) {
             taken_at = moment().format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
         } else {
@@ -38,7 +38,13 @@ export class Post {
             retakes,
             caption,
         );
-        await postUpload.upload(this.beFake);
+        const posted = await postUpload.upload(this.beFake);
+        if (!posted.done) {
+            return {
+                done: false,
+                msg: 'Error while uploading photos postUpload.upload()',
+            };
+        }
         let json_data: any = {
             isLate: late,
             retakeCounter: retakes,
@@ -75,9 +81,15 @@ export class Post {
                     },
                 },
             );
-            return response;
+            return {
+                done: true,
+                msg: response.data,
+            };
         } catch (error) {
-            return error;
+            return {
+                done: false,
+                msg: error,
+            };
         }
     }
 }

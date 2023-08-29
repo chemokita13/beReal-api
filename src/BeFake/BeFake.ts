@@ -591,12 +591,19 @@ export default class BeFake {
                 takenAt ?? undefined, // if takenAt is defined, send it but if not, send undefined (dont sent anything)
                 location ?? undefined, // same as above
             );
-
-            return {
-                done: true,
-                msg: 'Post uploaded successfully',
-                data: postUploaded,
-            };
+            if (!postUploaded.done) {
+                return {
+                    done: false,
+                    msg: 'Error uploading post',
+                    data: postUploaded.data,
+                };
+            } else {
+                return {
+                    done: true,
+                    msg: 'Post uploaded successfully',
+                    data: postUploaded,
+                };
+            }
         } catch (error) {
             console.log('🚀 ~ file: BeFake.ts:434 ~ BeFake ~ error:', error);
 
