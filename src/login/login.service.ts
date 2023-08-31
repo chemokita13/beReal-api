@@ -9,7 +9,12 @@ export class LoginService {
     constructor(private jwtService: JwtService) {} // Constructor with jwtService
 
     // Get tokens object and return token
-    private async tokenize(tokenObj: tokenObj): Promise<string> {
+    public async tokenize(tokenObj: tokenObj): Promise<string> {
+        return await this.jwtService.signAsync(tokenObj);
+    }
+
+    // Get tokens object and return token
+    public async tokenizeAll(tokenObj: any): Promise<string> {
         return await this.jwtService.signAsync(tokenObj);
     }
 
