@@ -2,16 +2,23 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     HttpException,
     Post,
+    Put,
     Req,
+    UploadedFile,
     UploadedFiles,
     UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { APIresponse, PostData } from 'src/types/types';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import {
+    FileFieldsInterceptor,
+    FileInterceptor,
+} from '@nestjs/platform-express';
+import {
+    ApiBody,
     ApiExtraModels,
     ApiHeader,
     ApiOperation,
@@ -102,7 +109,7 @@ export class PostController {
         },
     })
     @ApiOperation({
-        summary: 'Create a new post',
+        summary: 'Create a new post (DEPRECATED, SEE 3 last routes)',
         description:
             'All params are a formData. NOT WORKING IN SWAGGER (but yes with postman, fetch, axios...)',
     })
@@ -367,5 +374,172 @@ export class PostController {
         const token = req.headers.token;
         const { postId, commentId } = body;
         return this.postService.deletePostComment(token, postId, commentId);
+    }
+
+    //* Postupload by steps
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiOperation({
+        summary: 'Get data to upload a post',
+        description:
+            'This route returns 3 tokens, you must send it in /post/upload/data and /post/upload/photo route',
+    })
+    @Get('/upload/getData')
+    getPostUploadData(@Req() req: any): Promise<APIresponse> {
+        const token = req.headers.token;
+        return this.postService.getData(token);
+    }
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiOperation({
+        summary: 'Upload a photo',
+        description:
+            'You must send the tokenData returned in /post/upload/getData route (firstPhotoToken or secondPhotoToken)',
+    })
+    @ApiParam({
+        name: 'tokenData',
+        description: 'Token data returned in /post/upload/getData route',
+        type: 'string',
+        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+    })
+    @ApiParam({
+        name: 'img',
+        description: 'Image to upload',
+        type: 'file',
+        required: true,
+    })
+    @UseInterceptors(FileInterceptor('img'))
+    @Put('/upload/photo')
+    uploadPhoto(
+        @Req() req: any,
+        @UploadedFile() img: Express.Multer.File,
+        @Body('tokenData') tokenData: string,
+    ): Promise<APIresponse> {
+        const token = req.headers.token;
+        ///console.log(img);
+        return this.postService.makeRequest(token, tokenData, img.buffer);
+    }
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Internal server error.`,
+        status: 500,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 500,
+                        message: 'Internal server error',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiOperation({
+        summary: 'Upload a post',
+        description: 'You must send the postData params for your post',
+    })
+    @ApiBody({
+        type: PostData,
+        description: 'Post data',
+    })
+    @ApiBody({
+        type: String,
+        description: 'Token data returned in /post/upload/getData route',
+    })
+    @Post('/upload/data')
+    postUpload(
+        @Req() req: any,
+        @Body() body: { postData: PostData; tokenData: string },
+    ) {
+        console.log(
+            '🚀 ~ file: post.controller.ts:400 ~ PostController ~ postData:',
+            body.postData,
+        );
+        const token = req.headers.token;
+        return this.postService.postPhoto(token, body.postData, body.tokenData);
     }
 }

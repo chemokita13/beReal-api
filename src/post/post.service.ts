@@ -169,4 +169,220 @@ export class PostService {
             );
         }
     }
+
+    //* Create post by steps
+    async getData(token: string): Promise<APIresponse> {
+        try {
+            // Get tokens data and status from Object
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            const bf: BeFake = new BeFake(data);
+            const response: BeFakeResponse = await bf.getUploadUrl();
+            if (!response.done) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Post not created',
+                        data: response,
+                    },
+                    400,
+                );
+            }
+            // const dataToToken = response.data.paths;
+            // const tokenized: string = await this.loginService.tokenize(
+            //     dataToToken,
+            // );
+            // const dataToReturn = {
+            //     firstRequest: response.data.firstRequest,
+            //     secondRequest: response.data.secondRequest,
+            //     token: tokenized,
+            // };
+            const tokenizePrimary: string = await this.loginService.tokenizeAll(
+                {
+                    urlInfo: response.data.firstRequest,
+                },
+            );
+            const tokenizeSecondary: string =
+                await this.loginService.tokenizeAll({
+                    urlInfo: response.data.secondRequest,
+                });
+            const tokenizeThird: string = await this.loginService.tokenizeAll({
+                paths: response.data.paths,
+            });
+            const dataToReturn = {
+                firstPhotoToken: tokenizePrimary,
+                secondPhotoToken: tokenizeSecondary,
+                postDataToken: tokenizeThird,
+            };
+            return {
+                status: 201,
+                message: 'Post created',
+                data: dataToReturn,
+            };
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
+        }
+    }
+    async makeRequest(token: string, tokenData: string, photo: Buffer) {
+        try {
+            // Get tokens data and status from Object
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            const unTokenize: APIresponse = await this.loginService.getToken(
+                tokenData,
+            );
+            if (unTokenize.status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token post not generated',
+                        data: unTokenize.data,
+                    },
+                    400,
+                );
+            }
+            const bf: BeFake = new BeFake(data);
+            const response: BeFakeResponse = await bf.makeRequest(
+                unTokenize.data.urlInfo.url,
+                unTokenize.data.urlInfo.headers,
+                photo,
+            );
+            if (!response.done) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Post not created',
+                        data: response,
+                    },
+                    400,
+                );
+            }
+            return {
+                status: 201,
+                message: 'Post created',
+                data: response.data,
+            };
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
+        }
+    }
+    async postPhoto(token: string, postObj: PostData, tokenData: string) {
+        try {
+            // Get tokens data and status from Object
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            const unTokenize: APIresponse = await this.loginService.getToken(
+                tokenData,
+            );
+            if (unTokenize.status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token post not generated',
+                        data: unTokenize.data,
+                    },
+                    400,
+                );
+            }
+            const bf: BeFake = new BeFake(data);
+            const response: BeFakeResponse = await bf.postPhoto(
+                postObj.late,
+                postObj.visibility,
+                postObj.retakes,
+                [1500, 2000],
+                [1500, 2000],
+                unTokenize.data.paths.primaryPath,
+                unTokenize.data.paths.secondaryPath,
+                postObj.caption,
+                postObj.taken_at,
+                postObj.location,
+            );
+            if (!response.done) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Post not created',
+                        data: response,
+                    },
+                    400,
+                );
+            }
+            return {
+                status: 201,
+                message: 'Post created',
+                data: response.data,
+            };
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
+        }
+    }
 }
+
+/**
+/// Get tokens data and status from Object
+            const { status, data }: APIresponse =
+                await this.loginService.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            const bf: BeFake = new BeFake(data);
+ */
