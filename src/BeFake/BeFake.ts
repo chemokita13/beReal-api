@@ -615,6 +615,90 @@ export default class BeFake {
         }
     }
 
+    //* Post a photo by steps
+    async getUploadUrl(): Promise<BeFakeResponse> {
+        const post = new Post(this);
+        const res: BeFakeResponse = await post.getData();
+        if (res.done) {
+            return {
+                done: true,
+                msg: res.msg,
+                data: res.data,
+            };
+        }
+        return {
+            done: false,
+            msg: res.msg,
+            data: res.data,
+        };
+    }
+    async makeRequest(
+        url: string,
+        head: any,
+        photo: Uint8Array,
+    ): Promise<BeFakeResponse> {
+        const post = new Post(this);
+        const photoBuffered = await sharp(photo).toBuffer();
+        const res: BeFakeResponse = await post.makeRequest(
+            url,
+            head,
+            photoBuffered,
+        );
+        console.log('🚀 ~ file: BeFake.ts:647 ~ BeFake ~ res:', res);
+
+        if (res.done) {
+            return {
+                done: true,
+                msg: res.msg,
+                data: res.data,
+            };
+        }
+        return {
+            done: false,
+            msg: res.msg,
+            data: res.data,
+        };
+    }
+    async postPhoto(
+        late: boolean,
+        visibility: string = 'friends',
+        retakes: number = 0,
+        primary_size: [number, number],
+        secondary_size: [number, number],
+        primaryPath: string,
+        secondaryPath: string,
+        caption?: string, // caption is optional
+        taken_at?: string,
+        location?: [number, number],
+    ) {
+        const post = new Post(this);
+        const res: BeFakeResponse = await post.postPhoto(
+            late,
+            visibility,
+            retakes,
+            primary_size,
+            secondary_size,
+            primaryPath,
+            secondaryPath,
+            taken_at,
+            caption,
+            location,
+        );
+        console.log('🚀 ~ file: BeFake.ts:687 ~ BeFake ~ res:', res);
+        if (res.done) {
+            return {
+                done: true,
+                msg: res.msg,
+                data: res.data,
+            };
+        }
+        return {
+            done: false,
+            msg: res.msg,
+            data: res.data,
+        };
+    }
+
     // Delete your post
     async deletePost(): Promise<BeFakeResponse> {
         const response = await this._apiRequest('DELETE', 'content/posts');
