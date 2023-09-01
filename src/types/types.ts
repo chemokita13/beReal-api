@@ -164,3 +164,14 @@ export interface Music {
     openUrl: string;
     audioType: string;
 }
+
+export default class PostDataRequest {
+    @ApiProperty({
+        required: true,
+    })
+    postData: PostData;
+    @ApiProperty({
+        required: true,
+    })
+    tokenData: string;
+}

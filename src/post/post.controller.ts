@@ -12,7 +12,7 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import { APIresponse, PostData } from 'src/types/types';
+import PostDataRequest, { APIresponse, PostData } from 'src/types/types';
 import {
     FileFieldsInterceptor,
     FileInterceptor,
@@ -522,12 +522,8 @@ export class PostController {
         description: 'You must send the postData params for your post',
     })
     @ApiBody({
-        type: PostData,
-        description: 'Post data',
-    })
-    @ApiBody({
-        type: String,
-        description: 'Token data returned in /post/upload/getData route',
+        type: PostDataRequest,
+        description: 'Post data and token',
     })
     @Post('/upload/data')
     postUpload(
