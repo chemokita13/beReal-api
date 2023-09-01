@@ -170,10 +170,6 @@ export default class BeFake {
                 data: log,
             };
         } catch (error) {
-            console.log(
-                '🚀 ~ file: BeFake.ts:117 ~ BeFake ~ verifyOtpCloud ~ error:',
-                error,
-            );
             return {
                 done: false,
                 msg: 'Something went wrong',
@@ -294,7 +290,6 @@ export default class BeFake {
             this.firebaseToken = obj.firebase.token;
             this.firebaseExpiration = moment(obj.firebase.expires);
             this.userId = obj.userId;
-            //console.log('Loaded token successfully');
             //* await this.refreshTokens();
             //* await this.firebaseRefreshTokens();
             return {
@@ -391,7 +386,6 @@ export default class BeFake {
 
             // Exception handling
             if (response.status !== 200) {
-                // console.log(
                 //     'Token refresh failed(l164), error: ',
                 //     response.data,
                 // );
@@ -605,8 +599,6 @@ export default class BeFake {
                 };
             }
         } catch (error) {
-            console.log('🚀 ~ file: BeFake.ts:434 ~ BeFake ~ error:', error);
-
             return {
                 done: false,
                 msg: 'Error uploading post',
@@ -644,7 +636,6 @@ export default class BeFake {
             head,
             photoBuffered,
         );
-        console.log('🚀 ~ file: BeFake.ts:647 ~ BeFake ~ res:', res);
 
         if (res.done) {
             return {
@@ -684,7 +675,6 @@ export default class BeFake {
             caption,
             location,
         );
-        console.log('🚀 ~ file: BeFake.ts:687 ~ BeFake ~ res:', res);
         if (res.done) {
             return {
                 done: true,

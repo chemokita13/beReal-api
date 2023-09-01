@@ -42,7 +42,6 @@ export class Post {
                 head,
                 photo,
             );
-            console.log('🚀 ~ file: Post.ts:45 ~ Post ~ response:', response);
             return {
                 done: true,
                 msg: response.msg,
@@ -68,12 +67,6 @@ export class Post {
         caption?: string, // caption is optional
         location?: [number, number],
     ): Promise<BeFakeResponse> {
-        console.log('🚀 ~ file: Post.ts:71 ~ Post ~ caption:', caption);
-        console.log(
-            '🚀 ~ file: Post.ts:71 ~ Post ~ secondaryPath:',
-            secondaryPath,
-        );
-        console.log('🚀 ~ file: Post.ts:71 ~ Post ~ primaryPath:', primaryPath);
         let json_data: any = {
             isLate: late,
             retakeCounter: retakes,
@@ -93,7 +86,6 @@ export class Post {
                 path: secondaryPath,
             },
         };
-        console.log('🚀 ~ file: Post.ts:96 ~ Post ~ json_data:', json_data);
         if (location) {
             json_data['location'] = {
                 latitude: location[0],
@@ -102,10 +94,6 @@ export class Post {
         }
 
         try {
-            console.log(
-                '🚀 ~ file: Post.ts:112 ~ Post ~ this.beFake.token:',
-                this.beFake.token,
-            );
             const response = await axios.post(
                 'https://mobile.bereal.com/api/content/posts',
                 json_data,
@@ -118,14 +106,11 @@ export class Post {
                     },
                 },
             );
-            console.log('🚀 ~ file: Post.ts:113 ~ Post ~ response:', response);
             return {
                 done: true,
                 msg: response.data,
             };
         } catch (error) {
-            console.log('🚀 ~ file: Post.ts:119 ~ Post ~ error:', error);
-
             return {
                 done: false,
                 msg: error,

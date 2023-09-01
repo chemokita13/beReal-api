@@ -290,7 +290,6 @@ export class PostService {
                 data: response.data,
             };
         } catch (error) {
-            console.log(error);
             throw new HttpException(
                 {
                     status: 500,

@@ -102,7 +102,6 @@ export class PostUpload {
             const secondary_res = await axios.put(url2, this.secondary, {
                 headers: headers2,
             });
-            //?console.log(primary_res, secondary_res);
             this.primaryPath = response.data[0].path;
             this.secondaryPath = response.data[1].path;
             return {
@@ -175,7 +174,7 @@ export class PostUploadBySteps {
             }
             return newPhoto;
         } catch (error) {
-            console.log(error);
+            return error;
         }
     }
 
@@ -230,10 +229,6 @@ export class PostUploadBySteps {
             const response = await axios.put(url, photo, {
                 headers: headers,
             });
-            console.log(
-                '🚀 ~ file: PostUpload.ts:230 ~ PostUploadBySteps ~ MakeRequest ~ response:',
-                response,
-            );
             return {
                 done: true,
                 msg: response.statusText,

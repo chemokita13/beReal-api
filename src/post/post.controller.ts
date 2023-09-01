@@ -484,7 +484,6 @@ export class PostController {
         @Body('tokenData') tokenData: string,
     ): Promise<APIresponse> {
         const token = req.headers.token;
-        ///console.log(img);
         return this.postService.makeRequest(token, tokenData, img.buffer);
     }
     @ApiResponse({
@@ -535,10 +534,6 @@ export class PostController {
         @Req() req: any,
         @Body() body: { postData: PostData; tokenData: string },
     ) {
-        console.log(
-            '🚀 ~ file: post.controller.ts:400 ~ PostController ~ postData:',
-            body.postData,
-        );
         const token = req.headers.token;
         return this.postService.postPhoto(token, body.postData, body.tokenData);
     }
