@@ -135,7 +135,7 @@ export class LoginController {
     })
     @Post('/verify')
     VerifyCode(
-        @Body() body: { code: string; otpSesion: string },
+        @Body() body: { code: string; otpSession: string },
     ): Promise<APIresponse> {
         return this.loginService.verifyCode(body);
     }
