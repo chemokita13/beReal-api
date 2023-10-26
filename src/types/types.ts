@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+//* Login types
 // Login dto for swagger (used in login.controller.ts: @ApiBody({ type: LoginDto })
 export class LoginDto {
     @ApiProperty({
@@ -8,6 +9,21 @@ export class LoginDto {
         example: '+00123456789',
     })
     phone: string;
+}
+// Verify dto for swagger (used in login.controller.ts: @ApiBody({ type: VerifyDto })
+export class VerifyDto {
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: '123456',
+    })
+    code: string;
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    otpSession: string;
 }
 
 export type APIresponse = {

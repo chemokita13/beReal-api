@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Post, Body } from '@nestjs/common';
-import { APIresponse, LoginDto } from 'src/types/types';
+import { APIresponse, LoginDto, VerifyDto } from 'src/types/types';
 import {
     ApiBody,
     ApiOperation,
@@ -74,17 +74,9 @@ export class LoginController {
         return this.loginService.sendCode(body);
     }
 
-    @ApiParam({
-        name: 'code',
-        description: 'Code to verify',
-        type: 'string',
-        example: '123456',
-    })
-    @ApiParam({
-        name: 'otpSesion',
-        description: 'Otp session returned in send-code endpoint',
-        type: 'string',
-        example: 'exampleexampleexampleexample',
+    @ApiBody({
+        description: 'Credentials to authenticate a user',
+        type: VerifyDto,
     })
     @ApiOperation({ summary: 'Verify otp code' })
     @ApiResponse({
