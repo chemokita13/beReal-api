@@ -28,6 +28,16 @@ export class VerifyDto {
     })
     otpSession: string;
 }
+export class LoginRefreshDto {
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: 'exampleexampleexampleexampleexampleexample',
+        description:
+            'This is the refresh token from the /login/verify endpoint',
+    })
+    token: string;
+}
 
 export type APIresponse = {
     status: number;
