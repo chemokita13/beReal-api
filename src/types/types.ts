@@ -1,5 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+// Login dto for swagger (used in login.controller.ts: @ApiBody({ type: LoginDto })
+export class LoginDto {
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: '+00123456789',
+    })
+    phone: string;
+}
+
 export type APIresponse = {
     status: number;
     message: string;
