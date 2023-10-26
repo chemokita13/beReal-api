@@ -1,7 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Post, Body } from '@nestjs/common';
-import { APIresponse, LoginDto, VerifyDto } from 'src/types/types';
+import {
+    APIresponse,
+    LoginDto,
+    LoginRefreshDto,
+    VerifyDto,
+} from 'src/types/types';
 import {
     ApiBody,
     ApiOperation,
@@ -132,11 +137,9 @@ export class LoginController {
         return this.loginService.verifyCode(body);
     }
 
-    @ApiParam({
-        name: 'token',
-        description: 'JWT Token returned in /login/verify route',
-        type: 'string',
-        example: 'JWT_TOKEN',
+    @ApiBody({
+        description: 'Credentials to authenticate a user',
+        type: LoginRefreshDto,
     })
     @ApiOperation({ summary: 'Refresh token' })
     @ApiResponse({
