@@ -16,12 +16,15 @@ export class VerifyDto {
         required: true,
         type: 'string',
         example: '123456',
+        description: 'This is the code sent to your phone',
     })
     code: string;
     @ApiProperty({
         required: true,
         type: 'string',
         example: 'exampleexampleexampleexampleexampleexample',
+        description:
+            'This is the otpSession from the /login/send-code endpoint',
     })
     otpSession: string;
 }
