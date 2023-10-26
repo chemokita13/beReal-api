@@ -1,19 +1,23 @@
 import { Controller } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Post, Body } from '@nestjs/common';
-import { APIresponse } from 'src/types/types';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { APIresponse, LoginDto } from 'src/types/types';
+import {
+    ApiBody,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Login')
 @Controller('login')
 export class LoginController {
     constructor(private readonly loginService: LoginService) {}
 
-    @ApiParam({
-        name: 'phone',
-        description: 'Phone number to send otp code',
-        type: 'string',
-        example: '+34123456789',
+    @ApiBody({
+        description: 'Credentials to authenticate a user',
+        type: LoginDto,
     })
     @ApiOperation({ summary: 'Send otp code to your phone' })
     @ApiResponse({
