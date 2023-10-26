@@ -28,6 +28,7 @@ export class VerifyDto {
     })
     otpSession: string;
 }
+// Token refresh route dto for swagger (used in login.controller.ts: @ApiBody({ type: LoginRefreshDto })
 export class LoginRefreshDto {
     @ApiProperty({
         required: true,
