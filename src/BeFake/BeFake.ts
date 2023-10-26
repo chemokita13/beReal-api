@@ -139,17 +139,33 @@ export default class BeFake {
 
     async verifyOtpCloud(otpCode: string, otpSession: string) {
         try {
+            const fire_otp_headers = {
+                'content-type': 'application/json',
+                'x-firebase-client':
+                    'apple-platform/ios apple-sdk/19F64 appstore/true deploy/cocoapods device/iPhone9,1 fire-abt/8.15.0 fire-analytics/8.15.0 fire-auth/8.15.0 fire-db/8.15.0 fire-dl/8.15.0 fire-fcm/8.15.0 fire-fiam/8.15.0 fire-fst/8.15.0 fire-fun/8.15.0 fire-install/8.15.0 fire-ios/8.15.0 fire-perf/8.15.0 fire-rc/8.15.0 fire-str/8.15.0 firebase-crashlytics/8.15.0 os-version/14.7.1 xcode/13F100',
+                accept: '*/*',
+                'x-client-version': 'iOS/FirebaseSDK/8.15.0/FirebaseCore-iOS',
+                'x-firebase-client-log-type': '0',
+                'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
+                'accept-language': 'en',
+                'user-agent':
+                    'FirebaseAuth.iOS/8.15.0 AlexisBarreyat.BeReal/0.22.4 iPhone/14.7.1 hw/iPhone9_1',
+                'x-firebase-locale': 'en',
+            };
+
             const data = {
                 code: otpCode,
                 sessionInfo: otpSession,
                 operation: 'SIGN_UP_OR_IN',
             };
             const loginUrl: string =
-                'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPhoneNumber?key=AIzaSyDwjfEeparokD7sXPVQli9NsTuhT6fJ6iA';
+                'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPhoneNumber?key=' +
+                this.google_api_key;
             //const response = await axios.post(loginUrl, data);
             const req = await fetch(loginUrl, {
                 method: 'POST',
                 body: JSON.stringify(data),
+                headers: fire_otp_headers,
             });
             if (!req.ok) {
                 return {
