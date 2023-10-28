@@ -71,13 +71,13 @@ export class LoginService {
 
     public async verifyCode(body: {
         code: string;
-        otpSesion: string;
+        otpSession: string;
     }): Promise<APIresponse> {
         try {
             const bf = new BeFake();
             const response: BeFakeResponse = await bf.verifyOtpCloud(
                 body.code,
-                body.otpSesion,
+                body.otpSession,
             );
 
             if (response.done) {

@@ -1,5 +1,105 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+//* Login types
+// Login dto for swagger (used in login.controller.ts: @ApiBody({ type: LoginDto })
+export class LoginDto {
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: '+00123456789',
+    })
+    phone: string;
+}
+// Verify dto for swagger (used in login.controller.ts: @ApiBody({ type: VerifyDto })
+export class VerifyDto {
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: '123456',
+        description: 'This is the code sent to your phone',
+    })
+    code: string;
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: 'exampleexampleexampleexampleexampleexample',
+        description:
+            'This is the otpSession from the /login/send-code endpoint',
+    })
+    otpSession: string;
+}
+// Token refresh route dto for swagger (used in login.controller.ts: @ApiBody({ type: LoginRefreshDto })
+export class LoginRefreshDto {
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        example: 'exampleexampleexampleexampleexampleexample',
+        description:
+            'This is the refresh token from the /login/verify endpoint',
+    })
+    token: string;
+}
+
+//* Post module types
+// Coment type
+export class CommentDto {
+    @ApiProperty({
+        title: 'Post id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the post you want to comment on. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    postId: string;
+    @ApiProperty({
+        title: 'Comment',
+        description: 'The comment you want to post',
+        type: 'string',
+        required: true,
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    comment: string;
+}
+export class deleteCommentDto {
+    @ApiProperty({
+        title: 'Post id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the post you want to delete a comment from. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    postId: string;
+    @ApiProperty({
+        title: 'Comment id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the comment you want to delete. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    commentId: string;
+}
+
+//* Post upload route types
+// Image upload form dto for swagger (used in post.controller.ts: @ApiBody({ type: ImageUploadDto })
+export class ImageUploadDto {
+    @ApiProperty({
+        required: true,
+        type: 'file',
+        description: 'The image you want to upload',
+    })
+    img: Express.Multer.File;
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        description: 'The token from the /login/verify endpoint',
+    })
+    tokenData: string;
+}
+
+//* Normal API response types
 export type APIresponse = {
     status: number;
     message: string;
@@ -30,9 +130,11 @@ export class PostData {
     late?: boolean;
     @ApiProperty({
         required: true,
-        type: 'friends || friends-of-friends || public',
+        type: 'string',
+        enum: ['friends', 'friends-of-friends', 'public'],
+        example: 'friends || friends-of-friends || public',
     })
-    visibility: string;
+    visibility: 'friends' | 'friends-of-friends' | 'public';
     @ApiProperty({
         required: false,
         default: 0,
@@ -44,12 +146,14 @@ export class PostData {
     caption?: string;
     @ApiProperty({
         required: false,
-        type: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+        type: 'string',
+        example: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
     })
     taken_at?: string;
     @ApiProperty({
         required: false,
-        type: '[number(lat), number(lon)]',
+        type: 'string',
+        example: '[number(lat), number(lon)]',
     })
     location?: [number, number];
 }

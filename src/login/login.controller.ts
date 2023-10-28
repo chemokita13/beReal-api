@@ -1,19 +1,28 @@
 import { Controller } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Post, Body } from '@nestjs/common';
-import { APIresponse } from 'src/types/types';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+    APIresponse,
+    LoginDto,
+    LoginRefreshDto,
+    VerifyDto,
+} from 'src/types/types';
+import {
+    ApiBody,
+    ApiOperation,
+    ApiParam,
+    ApiResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('Login')
 @Controller('login')
 export class LoginController {
     constructor(private readonly loginService: LoginService) {}
 
-    @ApiParam({
-        name: 'phone',
-        description: 'Phone number to send otp code',
-        type: 'string',
-        example: '+34123456789',
+    @ApiBody({
+        description: 'Credentials to authenticate a user',
+        type: LoginDto,
     })
     @ApiOperation({ summary: 'Send otp code to your phone' })
     @ApiResponse({
@@ -70,17 +79,9 @@ export class LoginController {
         return this.loginService.sendCode(body);
     }
 
-    @ApiParam({
-        name: 'code',
-        description: 'Code to verify',
-        type: 'string',
-        example: '123456',
-    })
-    @ApiParam({
-        name: 'otpSesion',
-        description: 'Otp session returned in send-code endpoint',
-        type: 'string',
-        example: 'exampleexampleexampleexample',
+    @ApiBody({
+        description: 'Credentials to authenticate a user',
+        type: VerifyDto,
     })
     @ApiOperation({ summary: 'Verify otp code' })
     @ApiResponse({
@@ -131,16 +132,14 @@ export class LoginController {
     })
     @Post('/verify')
     VerifyCode(
-        @Body() body: { code: string; otpSesion: string },
+        @Body() body: { code: string; otpSession: string },
     ): Promise<APIresponse> {
         return this.loginService.verifyCode(body);
     }
 
-    @ApiParam({
-        name: 'token',
-        description: 'JWT Token returned in /login/verify route',
-        type: 'string',
-        example: 'JWT_TOKEN',
+    @ApiBody({
+        description: 'Credentials to authenticate a user',
+        type: LoginRefreshDto,
     })
     @ApiOperation({ summary: 'Refresh token' })
     @ApiResponse({
