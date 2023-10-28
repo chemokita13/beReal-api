@@ -70,7 +70,11 @@ export class FriendsController {
         description: 'JWT Token returned in /login/verify route',
         required: true,
     })
-    @ApiOperation({ summary: 'Get your friends-of-friends feed' })
+    @ApiOperation({
+        summary: 'Get your friends-of-friends feed',
+        description:
+            'Only works if the user have posted, if not, the route will return empty json',
+    })
     @ApiResponse({
         description: `Feed generated.`,
         status: 200,
