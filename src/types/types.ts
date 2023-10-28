@@ -40,6 +40,49 @@ export class LoginRefreshDto {
     token: string;
 }
 
+//* Post module types
+// Coment type
+export class CommentDto {
+    @ApiProperty({
+        title: 'Post id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the post you want to comment on. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    postId: string;
+    @ApiProperty({
+        title: 'Comment',
+        description: 'The comment you want to post',
+        type: 'string',
+        required: true,
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    comment: string;
+}
+export class deleteCommentDto {
+    @ApiProperty({
+        title: 'Post id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the post you want to delete a comment from. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    postId: string;
+    @ApiProperty({
+        title: 'Comment id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the comment you want to delete. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    commentId: string;
+}
+
+//* Normal API response types
 export type APIresponse = {
     status: number;
     message: string;

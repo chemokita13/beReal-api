@@ -12,7 +12,12 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './post.service';
-import PostDataRequest, { APIresponse, PostData } from 'src/types/types';
+import PostDataRequest, {
+    APIresponse,
+    CommentDto,
+    PostData,
+    deleteCommentDto,
+} from 'src/types/types';
 import {
     FileFieldsInterceptor,
     FileInterceptor,
@@ -111,7 +116,8 @@ export class PostController {
     @ApiOperation({
         summary: 'Create a new post (DEPRECATED, SEE 3 last routes)',
         description:
-            'All params are a formData. NOT WORKING IN SWAGGER (but yes with postman, fetch, axios...)',
+            'All params except a token are a formData. NOT WORKING IN SWAGGER (but yes with postman, fetch, axios...)',
+        deprecated: true,
     })
     @ApiResponse({
         description: `Post created.`,
@@ -244,7 +250,7 @@ export class PostController {
             'application/json': {
                 schema: {
                     example: {
-                        status: 200,
+                        status: 201,
                         message: 'Comment created',
                     },
                 },
@@ -281,17 +287,9 @@ export class PostController {
             },
         },
     })
-    @ApiParam({
-        name: 'postId',
-        description: 'Post id, you can get it in /friends/feed',
-        type: 'string',
-        example: '0btnwqsohhhznB00NEFV2',
-    })
-    @ApiParam({
-        name: 'comment',
-        description: 'Comment content',
-        type: 'string',
-        example: 'Nice post! I like it!',
+    @ApiBody({
+        type: CommentDto,
+        description: 'Comment data and post id',
     })
     @ApiOperation({ summary: 'Comment a post' })
     @Post('/comment')
@@ -309,17 +307,9 @@ export class PostController {
         description: 'JWT Token returned in /login/verify route',
         required: true,
     })
-    @ApiParam({
-        name: 'postId',
-        description: 'Post id, you can get it in /friends/feed',
-        type: 'string',
-        example: '0btnwqsohhhznB00NEFV2',
-    })
-    @ApiParam({
-        name: 'commentId',
-        description: 'Comment id, you can get it in /friends/feed',
-        type: 'string',
-        example: '0btnwqsohhhznB00NEFV2',
+    @ApiBody({
+        type: deleteCommentDto,
+        description: 'Comment data and post id',
     })
     @ApiOperation({ summary: 'Delete a comment' })
     @ApiResponse({
