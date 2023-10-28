@@ -523,7 +523,7 @@ export class PostController {
         },
     })
     @ApiOperation({
-        summary: 'Upload a post',
+        summary: 'Upload a post. Step 3 to upload a post (last step)',
         description: 'You must send the postData params for your post',
     })
     @ApiBody({
