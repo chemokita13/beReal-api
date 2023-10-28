@@ -15,6 +15,7 @@ import { PostService } from './post.service';
 import PostDataRequest, {
     APIresponse,
     CommentDto,
+    ImageUploadDto,
     PostData,
     deleteCommentDto,
 } from 'src/types/types';
@@ -24,6 +25,7 @@ import {
 } from '@nestjs/platform-express';
 import {
     ApiBody,
+    ApiConsumes,
     ApiExtraModels,
     ApiHeader,
     ApiOperation,
@@ -32,11 +34,11 @@ import {
     ApiTags,
 } from '@nestjs/swagger';
 
+//* WARNING: Fold all to better view (In vscode: cntrl + k + 0)
 @ApiTags('Post')
 @Controller('post')
 export class PostController {
     constructor(private readonly postService: PostService) {}
-    /// I dont know why, but that does not work in swagger api
     @ApiExtraModels(PostData)
     @ApiParam({
         name: 'img1',
@@ -367,10 +369,30 @@ export class PostController {
     }
 
     //* Postupload by steps
+    // TODO: add response ok
     @ApiHeader({
         name: 'token',
         description: 'JWT Token returned in /login/verify route',
         required: true,
+    })
+    @ApiResponse({
+        description: 'Tokens returned',
+        status: 201,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 201,
+                        message: 'Photo created',
+                        data: {
+                            firstPhotoToken: 'tokentokentokentoken',
+                            secondPhotoToken: 'tokentokentokentoken',
+                            postDataToken: 'tokentokentokentoken',
+                        },
+                    },
+                },
+            },
+        },
     })
     @ApiResponse({
         description: `Token not generated.`,
@@ -404,7 +426,7 @@ export class PostController {
         },
     })
     @ApiOperation({
-        summary: 'Get data to upload a post',
+        summary: 'Get data to upload a post. Step 1 to upload a post',
         description:
             'This route returns 3 tokens, you must send it in /post/upload/data and /post/upload/photo route',
     })
@@ -450,21 +472,14 @@ export class PostController {
         },
     })
     @ApiOperation({
-        summary: 'Upload a photo',
+        summary: 'Upload a photo. Step 2 to upload a post',
         description:
-            'You must send the tokenData returned in /post/upload/getData route (firstPhotoToken or secondPhotoToken)',
+            'You must send the tokenData returned in /post/upload/getData route (firstPhotoToken or secondPhotoToken).',
     })
-    @ApiParam({
-        name: 'tokenData',
-        description: 'Token data returned in /post/upload/getData route',
-        type: 'string',
-        example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-    })
-    @ApiParam({
-        name: 'img',
-        description: 'Image to upload',
-        type: 'file',
-        required: true,
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+        description: 'Image and token to upload',
+        type: ImageUploadDto,
     })
     @UseInterceptors(FileInterceptor('img'))
     @Put('/upload/photo')

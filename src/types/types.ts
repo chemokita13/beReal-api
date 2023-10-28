@@ -82,6 +82,23 @@ export class deleteCommentDto {
     commentId: string;
 }
 
+//* Post upload route types
+// Image upload form dto for swagger (used in post.controller.ts: @ApiBody({ type: ImageUploadDto })
+export class ImageUploadDto {
+    @ApiProperty({
+        required: true,
+        type: 'file',
+        description: 'The image you want to upload',
+    })
+    img: Express.Multer.File;
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        description: 'The token from the /login/verify endpoint',
+    })
+    tokenData: string;
+}
+
 //* Normal API response types
 export type APIresponse = {
     status: number;
@@ -113,9 +130,11 @@ export class PostData {
     late?: boolean;
     @ApiProperty({
         required: true,
-        type: 'friends || friends-of-friends || public',
+        type: 'string',
+        enum: ['friends', 'friends-of-friends', 'public'],
+        example: 'friends || friends-of-friends || public',
     })
-    visibility: string;
+    visibility: 'friends' | 'friends-of-friends' | 'public';
     @ApiProperty({
         required: false,
         default: 0,
@@ -127,12 +146,14 @@ export class PostData {
     caption?: string;
     @ApiProperty({
         required: false,
-        type: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
+        type: 'string',
+        example: 'YYYY-MM-DDTHH:mm:ss.SSS[Z]',
     })
     taken_at?: string;
     @ApiProperty({
         required: false,
-        type: '[number(lat), number(lon)]',
+        type: 'string',
+        example: '[number(lat), number(lon)]',
     })
     location?: [number, number];
 }
