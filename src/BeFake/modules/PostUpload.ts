@@ -166,12 +166,12 @@ export class PostUploadBySteps {
                 newPhoto = await sharp(photo).toFormat('webp').toBuffer();
             }
             // Resize imgs if resize is true
-            if (this.resize) {
-                const newsize = [1500, 2000];
-                newPhoto = await sharp(newPhoto)
-                    .resize(newsize[0], newsize[1])
-                    .toBuffer();
-            }
+            // if (this.resize) {
+            //     const newsize = [1500, 2000];
+            //     newPhoto = await sharp(newPhoto)
+            //         .resize(newsize[0], newsize[1])
+            //         .toBuffer();
+            // }
             return newPhoto;
         } catch (error) {
             return error;
