@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import * as sharp from 'sharp'; // to download and resize images
 import * as moment from 'moment';
 import { Post } from './modules/Post';
@@ -25,15 +24,7 @@ export default class BeFake {
     firebaseToken: any; // Firebase token
     dataPath: string; // Path to the data folder
 
-    constructor(
-        tokenObj: tokenObj = null,
-        refresh_token = null,
-        proxies = null,
-        disable_ssl = false,
-        deviceId = null,
-        ///api_url?,
-        ///google_api_key?
-    ) {
+    constructor(tokenObj: tokenObj = null, deviceId = null) {
         tokenObj && this.loadToken(tokenObj); // load token if provided
         (this.disable_ssl = false),
             (this.deviceId = deviceId || this._generateRandomDeviceId()),
