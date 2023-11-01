@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { RealmojisService } from './realmojis.service';
 import {
     ApiBody,
@@ -172,5 +172,83 @@ export class RealmojisController {
             mojiType,
             token,
         );
+    }
+    @Post()
+    @ApiHeader({
+        name: 'token',
+        description: 'The token to authenticate',
+    })
+    @ApiBody({
+        schema: {
+            example: {
+                mojiType: 'up || happy || surprised || laughing || heartEyes',
+            },
+        },
+    })
+    @ApiResponse({
+        status: 201,
+        description: 'Realmoji posted successfully',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 201,
+                        message: 'Realmoji posted successfully',
+                        data: { 'Large json array with data': '...' },
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Error posting realmoji',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Feed not fetched',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        status: 401,
+        description: 'Token error',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 401,
+                        message: 'Token not generated',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'MojiType error',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 404,
+                        message: 'MojiType not provided',
+                    },
+                },
+            },
+        },
+    })
+    @ApiOperation({
+        summary: 'Post a realmoji to all posts',
+        description: 'Post a realmoji to all posts given a mojiType',
+    })
+    reactToAllPosts(@Req() req: any, @Body() body: any) {
+        const token = req.headers.token;
+        const mojiType = body.mojiType;
+        return this.realmojisService.reactToAllPosts(mojiType, token);
     }
 }
