@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Req } from '@nestjs/common';
 import { RealmojisService } from './realmojis.service';
 import {
+    ApiBody,
     ApiHeader,
     ApiOperation,
     ApiParam,
@@ -78,5 +79,94 @@ export class RealmojisController {
         const postId = params.postId;
         const userId = params.userId;
         return this.realmojisService.getReactions(token, postId, userId);
+    }
+    @Put('/:userId/:postId')
+    @ApiHeader({
+        name: 'token',
+        description: 'The token to authenticate',
+    })
+    @ApiParam({
+        name: 'postId',
+        description: 'The id of the post',
+    })
+    @ApiParam({
+        name: 'userId',
+        description: 'The id of the user',
+    })
+    @ApiBody({
+        schema: {
+            example: {
+                mojiType: 'up || happy || surprised || laughing || heartEyes',
+            },
+        },
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Realmoji posted successfully',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'Realmoji posted successfully',
+                        data: { 'Large json array with data': '...' },
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'URL Params error',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'PostId or UserId not provided',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Error posting realmoji',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Realmojis not fetched',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        status: 401,
+        description: 'Token error',
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 401,
+                        message: 'Token not generated',
+                    },
+                },
+            },
+        },
+    })
+    postMoji(@Req() req: any, @Param() params: any, @Body() body: any) {
+        const token = req.headers.token;
+        const postId = params.postId;
+        const userId = params.userId;
+        const mojiType = body.mojiType;
+        return this.realmojisService.reactToPost(
+            postId,
+            userId,
+            mojiType,
+            token,
+        );
     }
 }

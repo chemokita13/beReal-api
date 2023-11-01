@@ -53,4 +53,55 @@ export class RealmojisService {
             data: realmojis,
         };
     }
+    async reactToPost(
+        postId: string,
+        userId: string,
+        mojiType: string,
+        token: string,
+    ): Promise<APIresponse> {
+        const { status, data }: APIresponse = await this.loginService.getToken(
+            token,
+        );
+        if (status != 200) {
+            throw new HttpException(
+                {
+                    status: 401,
+                    message: 'Token not generated',
+                    data: data,
+                },
+                401,
+            );
+        }
+        if (!postId || !userId || !mojiType) {
+            throw new HttpException(
+                {
+                    status: 404,
+                    message: 'PostId or UserId not provided',
+                    data: data,
+                },
+                404,
+            );
+        }
+        const bf: BeFake = new BeFake(data);
+        const realmojis: BeFakeResponse = await bf.postRealmogi(
+            postId,
+            userId,
+            mojiType,
+        );
+        if (!realmojis.done) {
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'Realmojis not fetched',
+                    data: realmojis,
+                },
+                400,
+            );
+        }
+        return {
+            status: 200,
+            message: 'Realmoji posted successfully',
+            data: realmojis.data,
+        };
+    }
 }
