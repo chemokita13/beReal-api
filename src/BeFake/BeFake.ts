@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
 import { tokenObj } from 'src/types/types';
+import e from 'express';
 
 export default class BeFake {
     //* Types
@@ -743,5 +744,71 @@ export default class BeFake {
             msg: 'User info returned successfully',
             data: response,
         };
+    }
+
+    // realmogis
+    async getReactions(postId: string): Promise<BeFakeResponse> {
+        try {
+            const response = await this._apiRequest(
+                'GET',
+                'content/realmojis',
+                null,
+                { postId: postId },
+            );
+            return {
+                done: true,
+                msg: 'Reactions returned successfully',
+                data: response,
+            };
+        } catch (error) {
+            return {
+                done: false,
+                msg: 'Error getting reactions',
+                data: error,
+            };
+        }
+    }
+    // post realmogis
+    async postRealmogi(postId: string, userId: string, emojiType: string) {
+        try {
+            const emojis = {
+                up: '👍',
+                happy: '😃',
+                surprised: '😲',
+                laughing: '😍',
+                heartEyes: '😂',
+            };
+            if (!emojis[emojiType]) {
+                return {
+                    done: false,
+                    msg: 'Invalid emoji type',
+                    data: null,
+                };
+            }
+            const params = {
+                postId: postId,
+                postUserId: userId,
+            };
+            const data = {
+                emoji: emojis[emojiType],
+            };
+            const response = await this._apiRequest(
+                'put',
+                '/content/realmojis',
+                data,
+                params,
+            );
+            return {
+                done: true,
+                msg: 'Realmogi posted successfully',
+                data: response,
+            };
+        } catch (error) {
+            return {
+                done: false,
+                msg: 'Error posting realmogi',
+                data: error,
+            };
+        }
     }
 }
