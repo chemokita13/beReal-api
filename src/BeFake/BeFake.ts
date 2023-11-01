@@ -747,13 +747,16 @@ export default class BeFake {
     }
 
     // realmogis
-    async getReactions(postId: string): Promise<BeFakeResponse> {
+    async getReactions(
+        postId: string,
+        userId: string,
+    ): Promise<BeFakeResponse> {
         try {
             const response = await this._apiRequest(
                 'GET',
                 'content/realmojis',
                 null,
-                { postId: postId },
+                { postId: postId, postUserId: userId },
             );
             return {
                 done: true,
