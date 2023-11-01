@@ -778,8 +778,8 @@ export default class BeFake {
                 up: '👍',
                 happy: '😃',
                 surprised: '😲',
-                laughing: '😍',
-                heartEyes: '😂',
+                heartEyes: '😍',
+                laughing: '😂',
             };
             if (!emojis[emojiType]) {
                 return {
@@ -797,7 +797,7 @@ export default class BeFake {
             };
             const response = await this._apiRequest(
                 'put',
-                '/content/realmojis',
+                'content/realmojis',
                 data,
                 params,
             );
