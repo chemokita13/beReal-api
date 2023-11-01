@@ -157,6 +157,10 @@ export class RealmojisController {
             },
         },
     })
+    @ApiOperation({
+        summary: 'Post a realmoji',
+        description: 'Post a realmoji given a userId, a postId and a mojiType',
+    })
     postMoji(@Req() req: any, @Param() params: any, @Body() body: any) {
         const token = req.headers.token;
         const postId = params.postId;
