@@ -7,5 +7,6 @@ import { LoginModule } from '../login/login.module';
     controllers: [FriendsController],
     providers: [FriendsService],
     imports: [LoginModule],
+    exports: [FriendsService],
 })
 export class FriendsModule {}
