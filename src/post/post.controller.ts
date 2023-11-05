@@ -487,9 +487,15 @@ export class PostController {
         @Req() req: any,
         @UploadedFile() img: Express.Multer.File,
         @Body('tokenData') tokenData: string,
+        @Body('resize') resize: string,
     ): Promise<APIresponse> {
         const token = req.headers.token;
-        return this.postService.makeRequest(token, tokenData, img.buffer);
+        return this.postService.makeRequest(
+            token,
+            tokenData,
+            img.buffer,
+            resize,
+        );
     }
     @ApiResponse({
         description: `Token not generated.`,

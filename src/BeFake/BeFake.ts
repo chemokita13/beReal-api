@@ -636,6 +636,7 @@ export default class BeFake {
         url: string,
         head: any,
         photo: Uint8Array,
+        resize: boolean,
     ): Promise<BeFakeResponse> {
         const post = new Post(this);
         const photoBuffered = await sharp(photo).toBuffer();
@@ -643,6 +644,7 @@ export default class BeFake {
             url,
             head,
             photoBuffered,
+            resize,
         );
 
         if (res.done) {
