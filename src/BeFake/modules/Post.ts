@@ -34,6 +34,7 @@ export class Post {
         url: string,
         head: any,
         photo: Uint8Array,
+        resize: boolean = false,
     ): Promise<BeFakeResponse> {
         try {
             const postToUpload: PostUploadBySteps = new PostUploadBySteps();
@@ -41,6 +42,7 @@ export class Post {
                 url,
                 head,
                 photo,
+                resize,
             );
             return {
                 done: true,

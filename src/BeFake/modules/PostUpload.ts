@@ -154,7 +154,10 @@ export class PostUploadBySteps {
     }
 
     // Change photos to webp and resize if resize is true (constructors prolongation)
-    private async changePhotos(photo: Uint8Array): Promise<Uint8Array> {
+    private async changePhotos(
+        photo: Uint8Array,
+        resize: boolean,
+    ): Promise<Uint8Array> {
         try {
             let newPhoto: Uint8Array;
             // Render imgs
@@ -166,12 +169,12 @@ export class PostUploadBySteps {
                 newPhoto = await sharp(photo).toFormat('webp').toBuffer();
             }
             // Resize imgs if resize is true
-            // if (this.resize) {
-            //     const newsize = [1500, 2000];
-            //     newPhoto = await sharp(newPhoto)
-            //         .resize(newsize[0], newsize[1])
-            //         .toBuffer();
-            // }
+            if (resize) {
+                const newsize = [1500, 2000];
+                newPhoto = await sharp(newPhoto)
+                    .resize(newsize[0], newsize[1])
+                    .toBuffer();
+            }
             return newPhoto;
         } catch (error) {
             return error;
@@ -223,8 +226,9 @@ export class PostUploadBySteps {
         url: string,
         headers: any,
         data: Uint8Array,
+        resize: boolean = false,
     ): Promise<BeFakeResponse> {
-        const photo: Uint8Array = await this.changePhotos(data);
+        const photo: Uint8Array = await this.changePhotos(data, resize);
         try {
             const response = await axios.put(url, photo, {
                 headers: headers,

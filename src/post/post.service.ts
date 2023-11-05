@@ -240,8 +240,15 @@ export class PostService {
             );
         }
     }
-    async makeRequest(token: string, tokenData: string, photo: Buffer) {
+    async makeRequest(
+        token: string,
+        tokenData: string,
+        photo: Buffer,
+        resize: string,
+    ) {
         try {
+            // pass resize string to boolean
+            const resizeBool: boolean = resize === 'true' ? true : false;
             // Get tokens data and status from Object
             const { status, data }: APIresponse =
                 await this.loginService.getToken(token);
@@ -273,6 +280,7 @@ export class PostService {
                 unTokenize.data.urlInfo.url,
                 unTokenize.data.urlInfo.headers,
                 photo,
+                resizeBool,
             );
             if (!response.done) {
                 throw new HttpException(

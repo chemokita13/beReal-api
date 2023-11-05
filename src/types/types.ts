@@ -97,6 +97,12 @@ export class ImageUploadDto {
         description: 'The token from the /login/verify endpoint',
     })
     tokenData: string;
+    @ApiProperty({
+        required: true,
+        type: 'string',
+        description: 'If true, the image will be resized',
+    })
+    resize: string;
 }
 
 //* Normal API response types
