@@ -816,4 +816,22 @@ export default class BeFake {
             };
         }
     }
+
+    // get memories feed
+    async getMemFeed(): Promise<BeFakeResponse> {
+        try {
+            const response = await this._apiRequest('GET', 'feeds/memories');
+            return {
+                done: true,
+                msg: 'Memories feed returned successfully',
+                data: response,
+            };
+        } catch (error) {
+            return {
+                done: false,
+                msg: 'Error getting memories feed',
+                data: error,
+            };
+        }
+    }
 }
