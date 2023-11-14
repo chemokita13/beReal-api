@@ -153,4 +153,36 @@ export class FriendsService {
             );
         }
     }
+    async getMemFeed(token: string): Promise<APIresponse> {
+        const { status, data }: APIresponse = await this.loginService.getToken(
+            token,
+        );
+        if (status != 200) {
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'Token not generated',
+                    data: data,
+                },
+                400,
+            );
+        }
+        const bf: BeFake = new BeFake(data);
+        const resData: BeFakeResponse = await bf.getMemFeed();
+        if (resData.done) {
+            return {
+                status: 200,
+                message: 'Feed generated',
+                data: resData.data,
+            };
+        }
+        throw new HttpException(
+            {
+                status: 400,
+                message: 'Feed not generated',
+                data: resData.data,
+            },
+            400,
+        );
+    }
 }

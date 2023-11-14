@@ -239,4 +239,46 @@ export class FriendsController {
         const token = req.headers.token;
         return this.friendsService.getUserInfo(token);
     }
+
+    @ApiOperation({ summary: 'Get your memories feed' })
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @ApiResponse({
+        description: `Memories feed generated.`,
+        status: 200,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'Memories feed generated',
+                        data: 'LARGE JSON WITH MEMORIES FEED DATA',
+                    },
+                },
+            },
+        },
+    })
+    @ApiResponse({
+        description: `Token not generated.`,
+        status: 400,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: 'LARGE JSON WITH ERROR DATA',
+                    },
+                },
+            },
+        },
+    })
+    @Get('/mem-feed')
+    GetMemFeed(@Req() req: any): Promise<APIresponse> {
+        const token = req.headers.token;
+        return this.friendsService.getMemFeed(token);
+    }
 }
