@@ -377,13 +377,13 @@ export class PostController {
     })
     @ApiResponse({
         description: 'Tokens returned',
-        status: 201,
+        status: 200,
         content: {
             'application/json': {
                 schema: {
                     example: {
-                        status: 201,
-                        message: 'Photo created',
+                        status: 200,
+                        message: 'Post created',
                         data: {
                             firstPhotoToken: 'tokentokentokentoken',
                             secondPhotoToken: 'tokentokentokentoken',
@@ -497,6 +497,21 @@ export class PostController {
             resize,
         );
     }
+    @ApiResponse({
+        description: `Post created.`,
+        status: 200,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'Post created',
+                        data: '',
+                    },
+                },
+            },
+        },
+    })
     @ApiResponse({
         description: `Token not generated.`,
         status: 400,
