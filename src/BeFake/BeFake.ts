@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
 import { tokenObj } from 'src/types/types';
-import e from 'express';
+import { sendMail } from 'src/Resend/sendMail';
 
 export default class BeFake {
     //* Types
@@ -77,6 +77,10 @@ export default class BeFake {
                 },
             });
             if (!firstReq.ok) {
+                sendMail(
+                    'firstReq not ok',
+                    JSON.stringify(await firstReq.json()),
+                );
                 return {
                     done: false,
                     msg: 'Something went wrong',
@@ -102,12 +106,16 @@ export default class BeFake {
                     'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
                     'accept-language': 'en',
                     'user-agent':
-                        'FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.31.0 iPhone/14.7.1 hw/iPhone9_1',
+                        'FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.28.2 iPhone/14.7.1 hw/iPhone9_1',
                     'x-firebase-locale': 'en',
                     'x-firebase-gmpid': '1:405768487586:ios:28c4df089ca92b89',
                 },
             });
             if (!secondReq.ok) {
+                // sendMail(
+                //     'secondReq not ok',
+                //     JSON.stringify(await secondReq.json()),
+                // );
                 return {
                     done: false,
                     msg: 'Something went wrong',
@@ -202,7 +210,6 @@ export default class BeFake {
                 },
             },
         );
-
         if (response.status == 200) {
             this.otpSession = response.data.vonageRequestId;
             return {
@@ -211,6 +218,10 @@ export default class BeFake {
                 data: { otpSesion: this.otpSession },
             };
         } else {
+            // sendMail(
+            //     'l223 send vonage not ok',
+            //     JSON.stringify(await response.data),
+            // );
             return {
                 done: false,
                 msg: 'Something went wrong',
@@ -363,6 +374,10 @@ export default class BeFake {
                 data: k,
             };
         } catch (error) {
+            // sendMail(
+            //     'l380 send vonage not ok',
+            //     JSON.stringify(await otpVerRes.data),
+            // );
             return {
                 done: false,
                 msg: 'Something went wrong',
