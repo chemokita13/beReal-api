@@ -536,6 +536,11 @@ export class PostController {
         type: PostDataRequest,
         description: 'Post data and token',
     })
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
     @Post('/upload/data')
     postUpload(
         @Req() req: any,
