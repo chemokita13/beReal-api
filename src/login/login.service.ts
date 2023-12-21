@@ -46,22 +46,87 @@ export class LoginService {
                 return {
                     status: 201,
                     message: 'OTP sent',
-                    data: response.data ,
+                    data: response.data,
                 };
             }
             throw new Error(response.data || response.msg);
-            
         } catch (error) {
             throw new HttpException(
                 {
                     status: 400,
                     message: 'OTP not sent',
-                    data: error.data
+                    data: error.data,
                 },
                 400,
-            )
+            );
         }
-          
+    }
+
+    public async sendVonageCode(body: { phone: string }): Promise<APIresponse> {
+        try {
+            const bf = new BeFake();
+            const response: BeFakeResponse = await bf.sendOtpVonage(body.phone);
+            console.log(response);
+            if (response.done) {
+                return {
+                    status: 201,
+                    message: 'OTP sent',
+                    data: response.data,
+                };
+            }
+            throw new Error(response.data || response.msg);
+        } catch (error) {
+            console.log(error);
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'OTP not sent',
+                    data: error.data,
+                },
+                400,
+            );
+        }
+    }
+
+    public async verifyVonageCode(body: {
+        code: string;
+        otpSession: string;
+    }): Promise<APIresponse> {
+        try {
+            const bf = new BeFake();
+            const response: BeFakeResponse = await bf.verifyOtpVonage(
+                body.code,
+                body.otpSession,
+            );
+
+            if (response.done) {
+                const tokenObj: tokenObj = bf.saveToken();
+                return {
+                    status: 201,
+                    message: 'OTP verified',
+                    data: {
+                        token: await this.tokenize(tokenObj),
+                    },
+                };
+            }
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'OTP not verified',
+                    data: response.data,
+                },
+                400,
+            );
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 500,
+                    message: 'Internal server error',
+                    data: error,
+                },
+                500,
+            );
+        }
     }
 
     public async verifyCode(body: {
