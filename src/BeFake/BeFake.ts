@@ -479,6 +479,9 @@ export default class BeFake {
             url: this.api_url + '/' + endpoint,
             headers: {
                 Authorization: 'Bearer ' + this.token,
+                'bereal-app-version-code': '14549',
+                'bereal-signature': 'berealsignature',
+                'bereal-device-id': 'berealdeviceid',
             },
             data: data,
             params: params,
