@@ -44,6 +44,15 @@ export class LoginRefreshDto {
 // Coment type
 export class CommentDto {
     @ApiProperty({
+        title: 'User id',
+        type: 'string',
+        required: true,
+        description:
+            'The id of the user you want to comment on. Returned on /friends/feed endpoint',
+        example: 'exampleexampleexampleexampleexampleexample',
+    })
+    userId: string;
+    @ApiProperty({
         title: 'Post id',
         type: 'string',
         required: true,

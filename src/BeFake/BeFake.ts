@@ -544,12 +544,14 @@ export default class BeFake {
 
     // Comment a post
     async commentPost(
+        userId: string,
         postId: string,
         comment: string,
     ): Promise<BeFakeResponse> {
         // Prepare the data to send in the request
         const payload = {
             postId: postId,
+            postUserId: userId,
         };
         const data = {
             content: comment,
@@ -586,11 +588,11 @@ export default class BeFake {
     async postUpload(
         primary: Uint8Array,
         secondary: Uint8Array,
-        resize: boolean = true,
-        late: boolean = true,
-        visibility: string = 'friends',
-        retakes: number = 0,
-        caption: string = '',
+        resize = true,
+        late = true,
+        visibility = 'friends',
+        retakes = 0,
+        caption = '',
         takenAt?: string,
         location?: [number, number],
     ): Promise<BeFakeResponse> {
@@ -680,8 +682,8 @@ export default class BeFake {
     }
     async postPhoto(
         late: boolean,
-        visibility: string = 'friends',
-        retakes: number = 0,
+        visibility = 'friends',
+        retakes = 0,
         primary_size: [number, number],
         secondary_size: [number, number],
         primaryPath: string,
