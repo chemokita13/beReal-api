@@ -297,11 +297,11 @@ export class PostController {
     @Post('/comment')
     commentPost(
         @Req() req: any,
-        @Body() body: { postId: string; comment: string },
+        @Body() body: { userId: string; postId: string; comment: string },
     ): Promise<APIresponse> {
         const token = req.headers.token;
-        const { postId, comment } = body;
-        return this.postService.commentPost(token, postId, comment);
+        const { postId, comment, userId } = body;
+        return this.postService.commentPost(token, userId, postId, comment);
     }
 
     @ApiHeader({

@@ -9,8 +9,8 @@ export class PostService {
     constructor(private readonly loginService: LoginService) {}
     // Gets a string and return an Uint8Array
     private JsonStringToUint8Array(jsonString: string): Uint8Array {
-        var uint8array = new Uint8Array(jsonString.length);
-        for (var i = 0; i < jsonString.length; i++) {
+        const uint8array = new Uint8Array(jsonString.length);
+        for (let i = 0; i < jsonString.length; i++) {
             uint8array[i] = jsonString.charCodeAt(i);
         }
         return uint8array;
@@ -77,6 +77,7 @@ export class PostService {
     }
     async commentPost(
         token: string,
+        userId: string,
         postId: string,
         comment: string,
     ): Promise<APIresponse> {
@@ -93,6 +94,7 @@ export class PostService {
             }
             const bf: BeFake = new BeFake(data);
             const commentResponse: BeFakeResponse = await bf.commentPost(
+                userId,
                 postId,
                 comment,
             );
