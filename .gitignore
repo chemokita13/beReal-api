@@ -35,7 +35,7 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Deployers
-fly.toml
+#fly.toml
 
 # misc
 .env
