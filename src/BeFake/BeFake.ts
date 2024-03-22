@@ -479,10 +479,11 @@ export default class BeFake {
             url: this.api_url + '/' + endpoint,
             headers: {
                 Authorization: 'Bearer ' + this.token,
-                'bereal-app-version-code': '14549',
-                'bereal-signature': 'MToxNzA3NDgwMjI4OvR2hbFOdgnyAz1bfiCp68ul5sVZiHnv+NAZNySEcBfD',
-                'bereal-device-id': '937v3jb942b0h6u9',//this._generateRandomDeviceId(),
+                "bereal-app-version-code": "14549",
+                "bereal-signature":
+                    "MToxNzEwOTU0MTc2OmPlM3WPWqPWRq7EseRiT98fErcmwWg1yUatGmYZnzaH",
                 "bereal-timezone": "Europe/Paris",
+                "bereal-device-id": "937v3jb942b0h6u9",
             },
             data: data,
             params: params,
