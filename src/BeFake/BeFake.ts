@@ -481,7 +481,7 @@ export default class BeFake {
                 Authorization: 'Bearer ' + this.token,
                 "bereal-app-version-code": "14549",
                 "bereal-signature":
-                    "MToxNzExNTU5NzM4Os1y+W0KM2Zwwevvjsl3DsUyRkXieKaCdPK127Ub0cfr",
+                    "MToxNzEyMTY2NzczOvl1SHcS47AGyc37sOQn/a9BZPOuhM2pDajsGQz0I6r",
                 "bereal-timezone": "Europe/Paris",
                 "bereal-device-id": "937v3jb942b0h6u9",
             },
