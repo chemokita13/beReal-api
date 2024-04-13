@@ -5,6 +5,7 @@ import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
 import { tokenObj } from 'src/types/types';
 import { sendMail } from 'src/Resend/sendMail';
+import getHeaders from 'happy-headers'
 
 export default class BeFake {
     //* Types
@@ -487,11 +488,12 @@ export default class BeFake {
             url: this.api_url + '/' + endpoint,
             headers: {
                 Authorization: 'Bearer ' + this.token,
-                "bereal-app-version-code": "14549",
-                "bereal-signature":
-                    "MToxNzEyOTQxMTkzOu75viungWtmbUPjGRoFkfFbDfqLKzyx8f/ayv2KR54K",
-                "bereal-timezone": "Europe/Paris",
-                "bereal-device-id": "937v3jb942b0h6u9",
+                // "bereal-app-version-code": "14549",
+                // "bereal-signature":
+                //     "MToxNzEyOTQxMTkzOu75viungWtmbUPjGRoFkfFbDfqLKzyx8f/ayv2KR54K",
+                // "bereal-timezone": "Europe/Paris",
+                // "bereal-device-id": "937v3jb942b0h6u9",
+                ...getHeaders()
             },
             data: data,
             params: params,
