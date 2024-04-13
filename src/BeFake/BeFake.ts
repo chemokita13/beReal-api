@@ -202,11 +202,13 @@ export default class BeFake {
         };
         const response = await axios.post(
             'https://auth.bereal.team/api/vonage/request-code',
-            data,
+            JSON.stringify(data),
             {
                 headers: {
-                    'user-agent':
-                        'BeReal/8586 CFNetwork/1240.0.4 Darwin/20.6.0',
+                    "Accept": "*/*",
+                    "User-Agent": "BeReal/8586 CFNetwork/1240.0.4 Darwin/20.6.0",
+                    "x-ios-bundle-identifier": "AlexisBarreyat.BeReal",
+                    "Content-Type": "application/json"
                 },
             },
         );
@@ -218,10 +220,6 @@ export default class BeFake {
                 data: { otpSesion: this.otpSession },
             };
         } else {
-            // sendMail(
-            //     'l223 send vonage not ok',
-            //     JSON.stringify(await response.data),
-            // );
             return {
                 done: false,
                 msg: 'Something went wrong',
@@ -329,12 +327,22 @@ export default class BeFake {
         otpCode: string,
         otpSesion: string,
     ): Promise<BeFakeResponse> {
+        const headers = {
+            "Accept": "application/json",
+            "User-Agent": "BeReal/8586 CFNetwork/1240.0.4 Darwin/20.6.0",
+            "x-ios-bundle-identifier": "AlexisBarreyat.BeReal",
+            "Content-Type": "application/json"
+        }
+
         const otpVerRes = await axios.post(
             'https://auth.bereal.team/api/vonage/check-code',
-            {
+            JSON.stringify({
                 vonageRequestId: otpSesion,
                 code: otpCode,
-            },
+            }),
+            {
+                headers: headers
+            }
         );
 
         // TODO: check if the response is 200 or 201
