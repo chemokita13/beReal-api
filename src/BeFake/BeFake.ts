@@ -24,6 +24,7 @@ export default class BeFake {
     headers: any; // axios headers
     firebaseToken: any; // Firebase token
     dataPath: string; // Path to the data folder
+    sign: string; // Signature for the requests
 
     constructor(tokenObj: tokenObj = null, deviceId = null) {
         tokenObj && this.loadToken(tokenObj); // load token if provided
@@ -37,6 +38,7 @@ export default class BeFake {
                 'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
             });
         this.dataPath = 'programData';
+        this.sign = 'MToxNzEzNzEyODgwOjxnCJdewCldXQkgQ/eI0ju6j+S5qUeVZ7GaepOzma2O';
     }
 
     // Generate a random device id, (random string with 16chars)
@@ -53,40 +55,41 @@ export default class BeFake {
 
     async sendOtpCloud(phoneNumber: string): Promise<BeFakeResponse> {
         try {
-            const firstData = JSON.stringify({
-                appToken:
+            const firstData = {
+                "appToken":
                     '54F80A258C35A916B38A3AD83CA5DDD48A44BFE2461F90831E0F97EBA4BB2EC7',
-            });
+            };
             const firstUrl =
                 'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyClient?key=' +
                 this.google_api_key;
-            const firstReq = await fetch(firstUrl, {
-                method: 'POST',
-                body: firstData,
+            const firstReq = await axios.post(firstUrl, firstData, {
                 headers: {
-                    'content-type': 'application/json',
-                    accept: '*/*',
-                    'x-client-version':
-                        'iOS/FirebaseSDK/9.6.0/FirebaseCore-iOS',
-                    'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
-                    'accept-language': 'en',
-                    'user-agent':
-                        'FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.31.0 iPhone/14.7.1 hw/iPhone9_1',
-                    'x-firebase-locale': 'en',
-                    'x-firebase-gmpid': '1:405768487586:ios:28c4df089ca92b89',
-                },
+                    "content-type": "application/json",
+                    "accept": "*/*",
+                    "x-client-version": "iOS/FirebaseSDK/9.6.0/FirebaseCore-iOS",
+                    "x-ios-bundle-identifier": "AlexisBarreyat.BeReal",
+                    "accept-language": "en",
+                    "user-agent": "FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.31.0 iPhone/14.7.1 hw/iPhone9_1",
+                    "x-firebase-locale": "en",
+                    "x-firebase-gmpid": "1:405768487586:ios:28c4df089ca92b89",
+                    "bereal-app-version-code": "14549",
+                    "bereal-signature": this.sign,
+                    "bereal-device-id": "937v3jb942b0h6u9",
+                    "bereal-timezone": "Europe/Paris",
+                }
             });
-            if (!firstReq.ok) {
-                sendMail(
-                    'firstReq not ok',
-                    JSON.stringify(await firstReq.json()),
-                );
+            console.log(firstReq);
+            if (firstReq.status == 201) {
+                // sendMail(
+                //     'firstReq not ok',
+                //     JSON.stringify(await firstReq.json()),
+                // );
                 return {
                     done: false,
                     msg: 'Something went wrong',
                 };
             }
-            const firstResponse = await firstReq.json();
+            const firstResponse = firstReq.data
             const receipt = firstResponse.receipt;
             const secondData = JSON.stringify({
                 phoneNumber: phoneNumber,
@@ -98,18 +101,20 @@ export default class BeFake {
             const secondReq = await fetch(secondUrl, {
                 method: 'POST',
                 body: secondData,
-                headers: {
-                    'content-type': 'application/json',
-                    accept: '*/*',
-                    'x-client-version':
-                        'iOS/FirebaseSDK/9.6.0/FirebaseCore-iOS',
-                    'x-ios-bundle-identifier': 'AlexisBarreyat.BeReal',
-                    'accept-language': 'en',
-                    'user-agent':
-                        'FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.28.2 iPhone/14.7.1 hw/iPhone9_1',
-                    'x-firebase-locale': 'en',
-                    'x-firebase-gmpid': '1:405768487586:ios:28c4df089ca92b89',
-                },
+                "headers": {
+                    "content-type": "application/json",
+                    "accept": "*/*",
+                    "x-client-version": "iOS/FirebaseSDK/9.6.0/FirebaseCore-iOS",
+                    "x-ios-bundle-identifier": "AlexisBarreyat.BeReal",
+                    "accept-language": "en",
+                    "user-agent": "FirebaseAuth.iOS/9.6.0 AlexisBarreyat.BeReal/0.31.0 iPhone/14.7.1 hw/iPhone9_1",
+                    "x-firebase-locale": "en",
+                    "x-firebase-gmpid": "1:405768487586:ios:28c4df089ca92b89",
+                    "bereal-app-version-code": "14549",
+                    "bereal-signature": this.sign,
+                    "bereal-device-id": "937v3jb942b0h6u9",
+                    "bereal-timezone": "Europe/Paris",
+                }
             });
             if (!secondReq.ok) {
                 // sendMail(
@@ -489,7 +494,7 @@ export default class BeFake {
                 Authorization: 'Bearer ' + this.token,
                 "bereal-app-version-code": "14549",
                 "bereal-signature":
-                    "MToxNzEyOTQxMTkzOu75viungWtmbUPjGRoFkfFbDfqLKzyx8f/ayv2KR54K",
+                    this.sign,
                 "bereal-timezone": "Europe/Paris",
                 "bereal-device-id": "937v3jb942b0h6u9",
             },
