@@ -6,7 +6,7 @@ import { APIresponse, tokenObj } from 'src/types/types';
 
 @Injectable()
 export class LoginService {
-    constructor(private jwtService: JwtService) {} // Constructor with jwtService
+    constructor(private jwtService: JwtService) { } // Constructor with jwtService
 
     // Get tokens object and return token
     public async tokenize(tokenObj: tokenObj): Promise<string> {
@@ -39,27 +39,38 @@ export class LoginService {
     }
 
     public async sendCode(body: { phone: string }): Promise<APIresponse> {
-        try {
-            const bf = new BeFake();
-            const response: BeFakeResponse = await bf.sendOtpCloud(body.phone);
-            if (response.done) {
-                return {
-                    status: 201,
-                    message: 'OTP sent',
-                    data: response.data,
-                };
-            }
-            throw new Error(response.data || response.msg);
-        } catch (error) {
-            throw new HttpException(
-                {
-                    status: 400,
-                    message: 'OTP not sent',
-                    data: error.data,
-                },
-                400,
-            );
+        // try {
+        const bf = new BeFake();
+        const response: BeFakeResponse = await bf.sendOtpCloud(body.phone);
+        console.log(body.phone)
+        console.log(response.data)
+        if (response.done) {
+            return {
+                status: 201,
+                message: 'OTP sent',
+                data: response.data,
+            };
         }
+        throw new HttpException(
+            {
+                status: 400,
+                message: 'OTP not sent',
+                data: response.data,
+            },
+            400,
+
+        );
+        // } catch (error) {
+        //     console.log(error.data)
+        //     throw new HttpException(
+        //         {
+        //             status: 400,
+        //             message: 'OTP not sent',
+        //             data: error.data,
+        //         },
+        //         400,
+        //     );
+        // }
     }
 
     public async sendVonageCode(body: { phone: string }): Promise<APIresponse> {
