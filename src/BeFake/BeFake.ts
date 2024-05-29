@@ -820,7 +820,7 @@ export default class BeFake {
     // get memories feed
     async getMemFeed(): Promise<BeFakeResponse> {
         try {
-            const response = await this._apiRequest('GET', 'feeds/memories');
+            const response = await this._apiRequest('GET', 'feeds/memories-v1');
             return {
                 done: true,
                 msg: 'Memories feed returned successfully',
