@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import BeFake from 'src/BeFake/BeFake';
+import { getHeaders } from 'src/BeFake/headers';
 import { BeFakeResponse } from 'src/BeFake/types/BeFakeResponse';
 import { APIresponse, tokenObj } from 'src/types/types';
 
@@ -25,6 +26,37 @@ export class LoginService {
                 status: 200,
                 message: 'Token generated',
                 data: await this.jwtService.verifyAsync(token),
+            };
+        } catch (error) {
+            throw new HttpException(
+                {
+                    status: 400,
+                    message: 'Token not generated',
+                    data: error,
+                },
+                400,
+            );
+        }
+    }
+
+    public async getTokenInfo(token: string): Promise<APIresponse> {
+        try {
+            const { status, data }: APIresponse =
+                await this.getToken(token);
+            if (status != 200) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'Token not generated',
+                        data: data,
+                    },
+                    400,
+                );
+            }
+            return {
+                status: 200,
+                message: 'Token generated',
+                data: { data: data, headers: getHeaders() }
             };
         } catch (error) {
             throw new HttpException(

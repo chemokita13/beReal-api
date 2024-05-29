@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { Post, Body } from '@nestjs/common';
 import {
@@ -9,6 +9,7 @@ import {
 } from 'src/types/types';
 import {
     ApiBody,
+    ApiHeader,
     ApiOperation,
     ApiParam,
     ApiResponse,
@@ -18,7 +19,7 @@ import {
 @ApiTags('Login')
 @Controller('login')
 export class LoginController {
-    constructor(private readonly loginService: LoginService) {}
+    constructor(private readonly loginService: LoginService) { }
 
     @ApiBody({
         description: 'Credentials to authenticate a user',
@@ -314,5 +315,35 @@ export class LoginController {
         @Body() body: { code: string; otpSession: string },
     ): Promise<APIresponse> {
         return this.loginService.verifyVonageCode(body);
+    }
+
+    // Return bereal original token from jwt token
+    @ApiOperation({
+        summary: 'Get the original token from jwt token',
+    })
+    @ApiResponse({
+        description: `Token generated.`,
+        status: 200,
+        content: {
+            'application/json': {
+                schema: {
+                    example: {
+                        status: 200,
+                        message: 'Token generated',
+                        data: 'ORIGINAL_TOKEN',
+                    },
+                },
+            },
+        },
+    })
+    @ApiHeader({
+        name: 'token',
+        description: 'JWT Token returned in /login/verify route',
+        required: true,
+    })
+    @Get('/get-token')
+    GetToken(@Req() req: any): Promise<APIresponse> {
+        const token = req.headers.token;
+        return this.loginService.getTokenInfo(token);
     }
 }
