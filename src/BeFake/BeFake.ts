@@ -5,6 +5,7 @@ import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
 import { tokenObj } from 'src/types/types';
 import { sendMail } from 'src/Resend/sendMail';
+import { getHeaders } from './headers';
 
 export default class BeFake {
     //* Types
@@ -73,9 +74,7 @@ export default class BeFake {
                 "x-firebase-locale": "en",
                 "x-firebase-gmpid": "1:405768487586:ios:28c4df089ca92b89",
                 "bereal-app-version-code": "14549",
-                "bereal-signature": this.sign,
-                "bereal-device-id": "937v3jb942b0h6u9",
-                "bereal-timezone": "Europe/Paris",
+                ...getHeaders()
             }
 
             const firstResponse = await axios.post(firstUrl, firstData, {
@@ -462,10 +461,7 @@ export default class BeFake {
             headers: {
                 Authorization: 'Bearer ' + this.token,
                 "bereal-app-version-code": "14549",
-                "bereal-signature":
-                    this.sign,
-                "bereal-timezone": "Europe/Paris",
-                "bereal-device-id": "937v3jb942b0h6u9",
+                ...getHeaders()
             },
             data: data,
             params: params,
