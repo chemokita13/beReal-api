@@ -222,16 +222,17 @@ export default class BeFake {
 
     async refreshTokens(): Promise<BeFakeResponse> {
         try {
+            await this.firebaseRefreshTokens();
             const response = await axios.post(
-                'https://auth.bereal.team/token',
+                'https://auth.bereal.team/token?grant_type=firebase',
                 {
-                    grant_type: 'refresh_token',
-                    client_id: 'ios',
-                    client_secret: '962D357B-B134-4AB6-8F53-BEA2B7255420',
-                    refresh_token: this.refresh_token,
+                    "grant_type": "firebase",
+                    "client_id": "ios",
+                    "client_secret": "962D357B-B134-4AB6-8F53-BEA2B7255420",
+                    "token": this.firebaseToken
                 },
                 {
-                    params: { grant_type: 'refresh_token' },
+                    headers: { "Accept": "application/json", "User-Agent": "BeReal/8586 CFNetwork/1240.0.4 Darwin/20.6.0", "x-ios-bundle-identifier": "AlexisBarreyat.BeReal", "Content-Type": "application/json" }
                 },
             );
             this.token = response.data.access_token;
