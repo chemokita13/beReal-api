@@ -7,7 +7,7 @@ import { APIresponse, tokenObj } from 'src/types/types';
 
 @Injectable()
 export class LoginService {
-    constructor(private jwtService: JwtService) { } // Constructor with jwtService
+    constructor(private jwtService: JwtService) {} // Constructor with jwtService
 
     // Get tokens object and return token
     public async tokenize(tokenObj: tokenObj): Promise<string> {
@@ -41,8 +41,7 @@ export class LoginService {
 
     public async getTokenInfo(token: string): Promise<APIresponse> {
         try {
-            const { status, data }: APIresponse =
-                await this.getToken(token);
+            const { status, data }: APIresponse = await this.getToken(token);
             if (status != 200) {
                 throw new HttpException(
                     {
@@ -56,7 +55,7 @@ export class LoginService {
             return {
                 status: 200,
                 message: 'Token generated',
-                data: { data: data, headers: getHeaders() }
+                data: { data: data, headers: getHeaders() },
             };
         } catch (error) {
             throw new HttpException(
@@ -74,14 +73,24 @@ export class LoginService {
         // try {
         const bf = new BeFake();
         const response: BeFakeResponse = await bf.sendOtpCloud(body.phone);
-        console.log(body.phone)
-        console.log(response.data)
+        console.log(body.phone);
         if (response.done) {
-            return {
-                status: 201,
-                message: 'OTP sent',
-                data: response.data,
-            };
+            if (response.data.otpSession.error) {
+                throw new HttpException(
+                    {
+                        status: 400,
+                        message: 'OTP not sent',
+                        data: response.data,
+                    },
+                    400,
+                );
+            } else {
+                return {
+                    status: 201,
+                    message: 'OTP sent',
+                    data: response.data,
+                };
+            }
         }
         throw new HttpException(
             {
@@ -90,7 +99,6 @@ export class LoginService {
                 data: response.data,
             },
             400,
-
         );
         // } catch (error) {
         //     console.log(error.data)
