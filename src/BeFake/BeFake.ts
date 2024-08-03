@@ -5,7 +5,7 @@ import { Post } from './modules/Post';
 import { BeFakeResponse } from './types/BeFakeResponse';
 import { tokenObj } from 'src/types/types';
 import { sendMail } from 'src/Resend/sendMail';
-import { getHeaders } from './headers';
+import getHeaders from './headers';
 
 export default class BeFake {
     //* Types

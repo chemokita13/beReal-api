@@ -1,13 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import BeFake from 'src/BeFake/BeFake';
-import { getHeaders } from 'src/BeFake/headers';
+import getHeaders from 'src/BeFake/headers';
 import { BeFakeResponse } from 'src/BeFake/types/BeFakeResponse';
 import { APIresponse, tokenObj } from 'src/types/types';
 
 @Injectable()
 export class LoginService {
-    constructor(private jwtService: JwtService) {} // Constructor with jwtService
+    constructor(private jwtService: JwtService) { } // Constructor with jwtService
 
     // Get tokens object and return token
     public async tokenize(tokenObj: tokenObj): Promise<string> {
